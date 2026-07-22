@@ -168,15 +168,27 @@ function saveHistory() {
 }
 
 // ====== 加载服务器端全量历史 ======
+let serverLoaded = 0;
+let serverError = null;
+const SERVER_DATA_URL = 'https://raw.githubusercontent.com/Shanghaikk/shanghaikk/main/deepseek/balance-data.json';
+
 async function loadServerHistory() {
   try {
-    const res = await fetch('balance-data.json?t=' + Date.now());
-    if (!res.ok) { console.warn('Server: HTTP ' + res.status); return null; }
+    // 尝试从 GitHub Pages 加载（同域）
+    let res = await fetch('balance-data.json?t=' + Date.now());
+    if (!res.ok) {
+      // 降级到 raw 地址
+      res = await fetch(SERVER_DATA_URL + '?t=' + Date.now());
+    }
+    if (!res.ok) { throw new Error('HTTP ' + res.status); }
     const data = await res.json();
-    if (!Array.isArray(data)) { return null; }
+    if (!Array.isArray(data)) { throw new Error('not array'); }
+    serverLoaded = data.length;
+    console.log('[DS] server loaded', serverLoaded, 'records');
     return data;
   } catch(e) {
-    console.warn('Server: ' + e.message);
+    serverError = e.message;
+    console.warn('[DS] server failed:', e.message);
     return null;
   }
 }
@@ -357,10 +369,13 @@ async function tick() {
 
 // ====== 启动：加载服务器历史 + 实时更新 ======
 (async function init() {
-  // 1. 先从服务器拉取全量历史（跨设备共享）
+  // 1. 显示加载状态
+  document.getElementById('headerSub').textContent = '⏳ 加载服务器历史...';
+
+  // 2. 先从服务器拉取全量历史（跨设备共享）
   const serverData = await loadServerHistory();
   if (serverData && serverData.length > 0) {
-    // 2. 合并去重：补充本地没有的记录
+    // 3. 合并去重：补充本地没有的记录
     const localKeys = new Set(balanceHistory.map(h => h.t.slice(0, 16)));
     let added = 0;
     for (const h of serverData) {
@@ -375,7 +390,15 @@ async function tick() {
       saveHistory();
     }
   }
-  // 3. 开始实时更新
+
+  // 4. 更新状态显示
+  const statusParts = [];
+  if (serverData) statusParts.push('☁️ ' + serverData.length + ' 服务器条');
+  if (balanceHistory.length > serverData.length) statusParts.push('💻 ' + (balanceHistory.length - serverData.length) + ' 本地条');
+  if (serverError) statusParts.push('⚠️ ' + serverError.slice(0, 30));
+  document.getElementById('headerSub').textContent = statusParts.join(' · ') || '加载中...';
+
+  // 5. 开始实时更新
   tick();
   setInterval(tick, 30000);
 })();
