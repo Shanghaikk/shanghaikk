@@ -99,7 +99,7 @@ def rebuild_excel(history):
     ws = wb.active
     ws.title = "余额记录"
 
-    headers = ["时间", "总余额", "变化", "赠送余额", "充值余额", "币种", "状态"]
+    headers = ["时间", "总余额", "变化"]
     hfont = Font(bold=True, color="FFFFFF")
     hfill = PatternFill(start_color="2E7D32", end_color="2E7D32", fill_type="solid")
 
@@ -112,20 +112,16 @@ def rebuild_excel(history):
     ws.column_dimensions["A"].width = 18
     ws.column_dimensions["B"].width = 12
     ws.column_dimensions["C"].width = 12
-    ws.column_dimensions["D"].width = 12
-    ws.column_dimensions["E"].width = 12
-    ws.column_dimensions["F"].width = 8
-    ws.column_dimensions["G"].width = 10
+    # ws.column_dimensions["D"].width = 12
+    # ws.column_dimensions["E"].width = 12
+    # ws.column_dimensions["F"].width = 8
+    # ws.column_dimensions["G"].width = 10
     ws.freeze_panes = "A2"
 
     for h in history:
         t = h.get("t", "")
         b = h.get("b", "")
         d = h.get("d", "")
-        g = h.get("g", "")
-        tp = h.get("tp", "")
-        cur = h.get("c", "CNY")
-        st = h.get("s", "正常")
         row = [t, b, d, g, tp, cur, st]
         ws.append(row)
 
@@ -144,7 +140,7 @@ def save_record_to_excel(entry):
         wb = Workbook()
         ws = wb.active
         ws.title = "余额记录"
-        headers = ["时间", "总余额", "变化", "赠送余额", "充值余额", "币种", "状态"]
+        headers = ["时间", "总余额", "变化"]
         hfont = Font(bold=True, color="FFFFFF")
         hfill = PatternFill(start_color="2E7D32", end_color="2E7D32", fill_type="solid")
         for col, h in enumerate(headers, 1):
@@ -155,20 +151,16 @@ def save_record_to_excel(entry):
         ws.column_dimensions["A"].width = 18
         ws.column_dimensions["B"].width = 12
         ws.column_dimensions["C"].width = 12
-        ws.column_dimensions["D"].width = 12
-        ws.column_dimensions["E"].width = 12
-        ws.column_dimensions["F"].width = 8
-        ws.column_dimensions["G"].width = 10
+        # ws.column_dimensions["D"].width = 12
+        # ws.column_dimensions["E"].width = 12
+        # ws.column_dimensions["F"].width = 8
+        # ws.column_dimensions["G"].width = 10
         ws.freeze_panes = "A2"
 
     ws.append([
         entry.get("t", ""),
         entry.get("b", ""),
         entry.get("d", ""),
-        entry.get("g", ""),
-        entry.get("tp", ""),
-        entry.get("c", "CNY"),
-        entry.get("s", "正常"),
     ])
     wb.save(EXCEL_PATH)
 
@@ -240,9 +232,9 @@ def main():
         print(f"[EXCEL] {time_key} | ¥{bal:.2f} | Δ{delta:+.2f}")
 
         # ── 用量统计 ──
-    update_usage_stats()
+        update_usage_stats()
 
-    # ── GitHub ──
+        # ── GitHub ──
         push_to_github(len(history))
 
     except Exception as e:
