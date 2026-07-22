@@ -182,6 +182,7 @@ const DEEPSEEK_API_KEY = (function() {
 
 // ====== 数据存储 ======
 let balanceHistory = [];
+let serverHistory = []; // 纯服务器数据（与 Excel 一致）
 const MAX_HISTORY = 50000; // 约 347 天 × 144 条/天
 try {
   const saved = localStorage.getItem('ds_balance_history');
@@ -351,8 +352,8 @@ function renderAll(data, isLive) {
   document.getElementById('balStatusInfo').textContent = avail ? '正常' : '已停用';
   document.getElementById('balStatusInfo').style.color = avail ? '#27ae60' : '#e74c3c';
 
-  renderChart(balanceHistory);
-  renderHistory(balanceHistory);
+  renderChart(serverHistory);
+  renderHistory(serverHistory);
 }
 
 // ====== 主循环 ======
@@ -411,9 +412,10 @@ async function loadUsageStats() {
   // 1. 显示加载状态
   document.getElementById('headerSub').textContent = '⏳ 加载服务器历史...';
 
-  // 2. 先从服务器拉取全量历史（跨设备共享）
+  // 2. 先保留纯服务器数据（与 Excel 一致）
   const serverData = await loadServerHistory();
   if (serverData && serverData.length > 0) {
+    serverHistory = [...serverData];
     // 3. 合并去重：补充本地没有的记录
     const localKeys = new Set(balanceHistory.map(h => h.t.slice(0, 16)));
     let added = 0;
