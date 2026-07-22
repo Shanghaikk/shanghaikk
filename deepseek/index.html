@@ -231,82 +231,88 @@ function render(data, isLive) {
 }
 
 function renderChart(history, currentBalance, symbol) {
-  if (history.length < 2) {
+  // 每10分钟记录一次余额，按时间对齐到整10分钟
+  // 格式：{ timeStr: '10:00', balance: 9.37, drop: 0.25 }
+  const INTERVAL = 10 * 60 * 1000; // 10分钟
+
+  // 1. 把历史快照按每10分钟整点对齐
+  //    取每个快照时间，对齐到最近的整10分钟
+  function alignTo10min(ts) {
+    return Math.floor(ts / INTERVAL) * INTERVAL;
+  }
+
+  // 2. 整理：对每个10分钟区间，取该区间内的最后一条余额记录
+  let snapshots = []; // [{time, balance}]
+  
+  // 先把所有快照按10分钟对齐
+  const aligned = {};
+  for (const h of history) {
+    const t = new Date(h.t).getTime();
+    const slot = alignTo10min(t);
+    // 取该区间内最新的余额
+    if (!aligned[slot] || t > new Date(aligned[slot].time).getTime()) {
+      aligned[slot] = { time: slot, balance: h.b };
+    }
+  }
+  
+  // 加入当前余额（对齐到当前10分钟）
+  const now = Date.now();
+  const nowSlot = alignTo10min(now);
+  aligned[nowSlot] = { time: nowSlot, balance: currentBalance };
+
+  // 3. 按时间排序
+  const slots = Object.values(aligned).sort((a, b) => a.time - b.time);
+
+  if (slots.length < 2) {
     document.getElementById('chartArea').innerHTML =
       '<div style="color:#444;padding:30px;text-align:center">数据不足，继续采样中...</div>';
     return;
   }
 
-  // 整理时间线：从第一个快照所在小时整点开始，到当前时间结束
-  const points = history.map(h => ({ t: new Date(h.t).getTime(), b: h.b }));
-  
-  // 加上当前余额作为最新的点（如果最新的快照不是当前余额）
-  const latestPoint = points[points.length - 1];
-  if (Math.abs(latestPoint.b - currentBalance) > 0.001) {
-    points.push({ t: Date.now(), b: currentBalance });
-  }
-
-  // 按10分钟区间分组
-  const firstTime = points[0].t;
-  const lastTime = points[points.length - 1].t;
-  const interval = 10 * 60 * 1000; // 10分钟
-  
-  let segments = [];
-  for (let t = firstTime; t <= lastTime; t += interval) {
-    const tEnd = t + interval;
-    // 找到这个区间内的余额
-    const beforePoints = points.filter(p => p.t <= t);
-    const duringPoints = points.filter(p => p.t > t && p.t <= tEnd);
-    const bal = beforePoints.length > 0 ? beforePoints[beforePoints.length - 1].b : currentBalance;
-    
-    // 消耗 = 这个区间开始时的余额 - 这个区间结束时的余额
-    const nextPoints = points.filter(p => p.t > t && p.t <= tEnd);
-    let endBal = bal;
-    if (nextPoints.length > 0) {
-      endBal = nextPoints[nextPoints.length - 1].b;
-    } else if (beforePoints.length > 0) {
-      const lastInSegment = points.filter(p => p.t <= tEnd);
-      endBal = lastInSegment.length > 0 ? lastInSegment[lastInSegment.length - 1].b : bal;
+  // 4. 计算每行的差值
+  let rows = [];
+  let maxDrop = 0.01;
+  for (let i = 1; i < slots.length; i++) {
+    const prev = slots[i - 1];
+    const curr = slots[i];
+    const drop = Math.max(0, prev.balance - curr.balance);
+    // 差值 = 上一时刻余额 - 这一时刻余额
+    if (drop > 0) { // 只显示有消耗的行
+      if (drop > maxDrop) maxDrop = drop;
+      const timeLabel = new Date(curr.time).toLocaleTimeString('zh-CN', {
+        hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Shanghai'
+      });
+      rows.push({
+        time: curr.time,
+        timeLabel: timeLabel,
+        balance: curr.balance,   // 这一时刻的余额
+        drop: drop               // 差值 = 上一时刻 - 这一时刻
+      });
     }
-    
-    const drop = Math.max(0, bal - endBal);
-    const label = new Date(t).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Shanghai' });
-    
-    segments.push({ label, balance: bal, drop });
   }
 
-  // 找到最大消耗值用于柱状图缩放
-  const maxDrop = Math.max(0.01, ...segments.map(s => s.drop));
-
-  // 渲染柱状图
+  // 5. 渲染
   let html = '';
   
-  // 第一行：显示最早余额（灰色）
-  if (segments.length > 0) {
-    html += `<div class="bar-row bar-row-0">
-      <div class="bar-bal" style="color:#555">${symbol}${segments[0].balance.toFixed(2)}</div>
-      <div class="bar-time" style="color:#555">${segments[0].label}</div>
-      <div class="bar-track-wrap"></div>
-      <div class="bar-drop" style="color:#444">—</div>
-    </div>`;
-  }
+  // 第一行：显示最早的时刻（灰色，无柱状图）
+  const firstTime = new Date(slots[0].time).toLocaleTimeString('zh-CN', {
+    hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Shanghai'
+  });
+  html += '<div class="bar-row bar-row-0">' +
+    '<div class="bar-bal" style="color:#555">' + symbol + slots[0].balance.toFixed(2) + '</div>' +
+    '<div class="bar-time" style="color:#555">' + firstTime + '</div>' +
+    '<div class="bar-track-wrap"></div>' +
+    '<div class="bar-drop" style="color:#444">—</div></div>';
 
-  // 后续行：只显示有消耗的时段
-  for (let i = 1; i < segments.length; i++) {
-    const s = segments[i];
-    if (s.drop <= 0) continue; // 无消耗不显示
-    
-    const widthPct = Math.max(4, (s.drop / maxDrop) * 100);
-    const color = s.drop > 0.15 ? '#f59e0b' : s.drop > 0.05 ? '#eab308' : '#4ade80';
-    
-    html += `<div class="bar-row">
-      <div class="bar-bal" style="color:${color}">${symbol}${s.balance.toFixed(2)}</div>
-      <div class="bar-time" style="color:#888">${s.label}</div>
-      <div class="bar-track-wrap">
-        <div class="bar-fill" style="width:${widthPct}%;background:${color}"></div>
-      </div>
-      <div class="bar-drop" style="color:${color}">${symbol}${s.drop.toFixed(2)}</div>
-    </div>`;
+  // 后续行：有消耗的时段
+  for (const row of rows) {
+    const widthPct = Math.max(4, (row.drop / maxDrop) * 100);
+    const color = row.drop > 0.15 ? '#f59e0b' : row.drop > 0.05 ? '#eab308' : '#4ade80';
+    html += '<div class="bar-row">' +
+      '<div class="bar-bal" style="color:' + color + '">' + symbol + row.balance.toFixed(2) + '</div>' +
+      '<div class="bar-time" style="color:#888">' + row.timeLabel + '</div>' +
+      '<div class="bar-track-wrap"><div class="bar-fill" style="width:' + widthPct + '%;background:' + color + '"></div></div>' +
+      '<div class="bar-drop" style="color:' + color + '">' + symbol + row.drop.toFixed(2) + '</div></div>';
   }
 
   if (!html) {
