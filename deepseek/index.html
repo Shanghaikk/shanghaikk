@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepSeek 费用看板</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  
+  :root {
+    --bg: #0b1120;
+    --card: rgba(255,255,255,0.05);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #e8edf5;
+    --text-secondary: #8892a4;
+    --accent: #60a5fa;
+    --accent-gradient: linear-gradient(135deg, #60a5fa, #a78bfa);
+    --green: #10b981;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --pink: #ec4899;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 0.75rem;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 30% 20%, rgba(96,165,250,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(16,185,129,0.05) 0%, transparent 50%);
+    z-index: -1;
+  }
+
+  .container { max-width: 500px; width: 100%; }
+
+  .header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .header .logo {
+    font-size: 2rem;
+    margin-bottom: 0.25rem;
+  }
+  .header .title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .header .sub {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+  }
+
+  /* API Key Input */
+  .key-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 1.25rem;
+    backdrop-filter: blur(12px);
+    margin-bottom: 1rem;
+  }
+  .key-card .label {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  .key-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .key-row input {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    color: var(--text);
+    font-size: 0.85rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .key-row input:focus {
+    border-color: var(--accent);
+  }
+  .key-row input::placeholder {
+    color: rgba(255,255,255,0.25);
+  }
+  .key-row button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+  .key-row button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Balance Card */
+  .balance-card {
+    background: linear-gradient(135deg, rgba(96,165,250,0.12), rgba(167,139,250,0.12));
+    border: 1px solid rgba(96,165,250,0.2);
+    border-radius: 20px;
+    padding: 1.5rem;
+    backdrop-filter: blur(12px);
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  .balance-card .bal-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+  .balance-card .bal-amount {
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .balance-card .bal-amount .currency {
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--text-secondary);
+  }
+  .balance-card .bal-status {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    margin-top: 0.5rem;
+  }
+  .balance-card .bal-status.active {
+    background: rgba(16,185,129,0.15);
+    color: var(--green);
+  }
+  .balance-card .bal-status.inactive {
+    background: rgba(239,68,68,0.15);
+    color: var(--red);
+  }
+
+  /* Balance Breakdown */
+  .breakdown-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .breakdown-item {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 0.8rem;
+    text-align: center;
+  }
+  .breakdown-item .label {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+  .breakdown-item .value {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  .breakdown-item .value.granted { color: var(--green); }
+  .breakdown-item .value.topped { color: var(--orange); }
+
+  /* Stats Grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1rem;
+    text-align: center;
+  }
+  .stat-card .label {
+    font-size: 0.6rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+  .stat-card .value {
+    font-size: 1.2rem;
+    font-weight: 700;
+  }
+  .stat-card .value.accent { color: var(--accent); }
+  .stat-card .value.orange { color: var(--orange); }
+  .stat-card .value.green { color: var(--green); }
+  .stat-card .value.red { color: var(--red); }
+
+  /* Refresh button */
+  .refresh-area {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  .refresh-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 0.5rem 1.5rem;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .refresh-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--text);
+  }
+  .refresh-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .last-update {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.25);
+    margin-top: 0.4rem;
+  }
+
+  /* Loading */
+  .loading { text-align: center; padding: 2rem; color: var(--text-secondary); }
+  .spinner {
+    display: inline-block; width: 28px; height: 28px;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 0.5rem;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error {
+    text-align: center; padding: 1rem; color: var(--red);
+    font-size: 0.85rem;
+    background: rgba(239,68,68,0.08);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+  }
+
+  .footer {
+    text-align: center; padding: 1rem 0 0.5rem;
+    font-size: 0.7rem; color: rgba(255,255,255,0.2);
+  }
+
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">🤖</div>
+    <div class="title">DeepSeek 费用看板</div>
+    <div class="sub">实时查询 API 余额与用量</div>
+  </div>
+
+  <!-- API Key -->
+  <div class="key-card" id="keyCard">
+    <div class="label">🔑 DeepSeek API Key</div>
+    <div class="key-row">
+      <input type="password" id="apiKeyInput" placeholder="sk-..." autocomplete="off">
+      <button id="saveKeyBtn">保存</button>
+    </div>
+    <div style="font-size:0.7rem;color:var(--text-secondary);margin-top:0.5rem;">
+      获取Key: <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:var(--accent);">platform.deepseek.com</a>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div id="errorBox" class="error hidden"></div>
+
+  <!-- Balance -->
+  <div id="balanceArea" class="hidden">
+    <div class="balance-card">
+      <div class="bal-label">💰 当前余额</div>
+      <div class="bal-amount"><span class="currency" id="balCurrency">¥</span><span id="balAmount">0.00</span></div>
+      <div class="bal-status" id="balStatus">● 可用</div>
+    </div>
+
+    <div class="breakdown-grid">
+      <div class="breakdown-item">
+        <div class="label">赠送余额</div>
+        <div class="value granted"><span id="balGranted">0.00</span></div>
+      </div>
+      <div class="breakdown-item">
+        <div class="label">充值余额</div>
+        <div class="value topped"><span id="balTopped">0.00</span></div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">日消耗</div>
+        <div class="value accent">¥<span id="dailyCost">0.00</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">周消耗</div>
+        <div class="value orange">¥<span id="weeklyCost">0.00</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">月消耗</div>
+        <div class="value green">¥<span id="monthlyCost">0.00</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">总消耗</div>
+        <div class="value red">¥<span id="totalCost">0.00</span></div>
+      </div>
+    </div>
+
+    <div class="refresh-area">
+      <button class="refresh-btn" id="refreshBtn">🔄 刷新数据</button>
+      <div class="last-update" id="lastUpdate">--</div>
+    </div>
+  </div>
+
+  <div class="loading" id="loadingArea">
+    <div class="spinner"></div>
+    <div>查询中...</div>
+  </div>
+
+  <div class="footer">
+    数据来源: api.deepseek.com · 费用来自人工估算
+  </div>
+</div>
+
+<script>
+const API_BASE = 'https://api.deepseek.com';
+const STORAGE_KEY = 'ds_api_key';
+
+// DOM refs
+const keyInput = document.getElementById('apiKeyInput');
+const saveBtn = document.getElementById('saveKeyBtn');
+const errorBox = document.getElementById('errorBox');
+const balanceArea = document.getElementById('balanceArea');
+const loadingArea = document.getElementById('loadingArea');
+const refreshBtn = document.getElementById('refreshBtn');
+
+const balCurrency = document.getElementById('balCurrency');
+const balAmount = document.getElementById('balAmount');
+const balStatus = document.getElementById('balStatus');
+const balGranted = document.getElementById('balGranted');
+const balTopped = document.getElementById('balTopped');
+const dailyCost = document.getElementById('dailyCost');
+const weeklyCost = document.getElementById('weeklyCost');
+const monthlyCost = document.getElementById('monthlyCost');
+const totalCost = document.getElementById('totalCost');
+const lastUpdate = document.getElementById('lastUpdate');
+
+let currentKey = localStorage.getItem(STORAGE_KEY) || '';
+if (currentKey) {
+  keyInput.value = currentKey;
+  loadBalance();
+}
+
+// Save key
+saveBtn.addEventListener('click', () => {
+  const key = keyInput.value.trim();
+  if (!key) {
+    showError('请输入 API Key');
+    return;
+  }
+  localStorage.setItem(STORAGE_KEY, key);
+  currentKey = key;
+  loadBalance();
+});
+
+refreshBtn.addEventListener('click', loadBalance);
+
+async function fetchBalance(apiKey) {
+  const res = await fetch(`${API_BASE}/user/balance`, {
+    headers: { 'Authorization': `Bearer ${apiKey}`, 'Accept': 'application/json' }
+  });
+  if (res.status === 401) throw new Error('API Key 无效或已过期');
+  if (res.status === 429) throw new Error('请求过于频繁，请稍后重试');
+  if (!res.ok) throw new Error(`请求失败 (${res.status})`);
+  return await res.json();
+}
+
+async function loadBalance() {
+  if (!currentKey) return;
+
+  hideError();
+  loadingArea.classList.remove('hidden');
+  balanceArea.classList.add('hidden');
+  refreshBtn.disabled = true;
+
+  try {
+    const data = await fetchBalance(currentKey);
+    const info = data.balance_infos?.[0];
+
+    if (info) {
+      balCurrency.textContent = info.currency === 'USD' ? '$' : '¥';
+      balAmount.textContent = parseFloat(info.total_balance || '0').toFixed(2);
+      balGranted.textContent = parseFloat(info.granted_balance || '0').toFixed(2);
+      balTopped.textContent = parseFloat(info.topped_up_balance || '0').toFixed(2);
+
+      if (data.is_available) {
+        balStatus.textContent = '● 可用';
+        balStatus.className = 'bal-status active';
+      } else {
+        balStatus.textContent = '✕ 已停用';
+        balStatus.className = 'bal-status inactive';
+      }
+    }
+
+    balanceArea.classList.remove('hidden');
+    loadingArea.classList.add('hidden');
+    refreshBtn.disabled = false;
+
+    const now = new Date();
+    lastUpdate.textContent = `更新于 ${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+
+  } catch (err) {
+    loadingArea.classList.add('hidden');
+    refreshBtn.disabled = false;
+    showError(err.message);
+  }
+}
+
+function showError(msg) {
+  errorBox.textContent = '⚠️ ' + msg;
+  errorBox.classList.remove('hidden');
+}
+function hideError() {
+  errorBox.classList.add('hidden');
+}
+</script>
+</body>
+</html>
