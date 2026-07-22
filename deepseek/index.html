@@ -244,8 +244,7 @@ function alignSlot(ts) {
 function renderChart(history) {
   const el = document.getElementById('chartArea');
   // 过滤掉变化为0的记录
-  const filtered = history.filter(h => { const d = typeof h.d === 'number' ? h.d : 0; return d !== 0 || true; });
-  // 但至少保留第一条和最新一条
+  const filtered = history.filter(h => { const d = typeof h.d === 'number' ? h.d : null; return d !== 0; });
   const show = filtered.length >= 2 ? filtered : history;
 
   if (show.length < 2) {
@@ -286,7 +285,7 @@ function renderChart(history) {
 function renderHistory(history) {
   const el = document.getElementById('historyArea');
   // 过滤掉变化为0的记录
-  const filtered = history.filter(h => { const d = typeof h.d === 'number' ? h.d : 0; return d !== 0 || true; });
+  const filtered = history.filter(h => { const d = typeof h.d === 'number' ? h.d : null; return d !== 0; });
   const show = filtered.length >= 2 ? filtered : history;
 
   if (show.length < 2) { el.innerHTML = '<div class="empty">暂无记录</div>'; return; }
