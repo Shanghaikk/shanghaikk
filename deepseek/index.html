@@ -123,6 +123,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
     </div>
   </div>
 
+  <!-- 用量三板块（仿 DeepSeek 开放平台） -->
+  <div class="section-title" style="margin-top:24px">🔋 今日用量</div>
+  <div class="stat-grid" id="usageStats">
+    <div class="stat-card c1">
+      <div class="l">💰 消费金额</div>
+      <div class="v" id="usageCost">¥0.00</div>
+      <div class="s" id="usageCostLabel">今日消耗</div>
+    </div>
+    <div class="stat-card c2">
+      <div class="l">📡 API 请求</div>
+      <div class="v" id="usageCalls">0</div>
+      <div class="s" id="usageCallsLabel">次请求</div>
+    </div>
+    <div class="stat-card c3">
+      <div class="l">🔤 Tokens</div>
+      <div class="v" id="usageTokens">0</div>
+      <div class="s" id="usageTokensLabel">input / output</div>
+    </div>
+  </div>
+
   <!-- 余额变化趋势 -->
   <div class="section-title">📊 余额变化 · 每10分钟</div>
   <div class="chart-card" id="chartArea">
@@ -171,6 +191,7 @@ function saveHistory() {
 let serverLoaded = 0;
 let serverError = null;
 const SERVER_DATA_URL = 'https://raw.githubusercontent.com/Shanghaikk/shanghaikk/main/deepseek/balance-data.json';
+const USAGE_DATA_URL = 'https://raw.githubusercontent.com/Shanghaikk/shanghaikk/main/deepseek/usage-data.json';
 
 async function loadServerHistory() {
   try {
@@ -367,6 +388,35 @@ async function tick() {
   }
 }
 
+// ====== 加载用量数据 ======
+function formatNum(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'k';
+  return n.toString();
+}
+
+async function loadUsageStats() {
+  try {
+    let res = await fetch('usage-data.json?t=' + Date.now());
+    if (!res.ok) { res = await fetch(USAGE_DATA_URL + '?t=' + Date.now()); }
+    if (!res.ok) return;
+    const data = await res.json();
+    const today = new Date().toISOString().slice(0, 10);
+    let todayData = data.days?.[today];
+    if (!todayData) {
+      const days = Object.keys(data.days || {}).sort().reverse();
+      if (days.length > 0) todayData = data.days[days[0]];
+    }
+    if (!todayData) return;
+    document.getElementById('usageCost').textContent = '¥' + todayData.cost_cny.toFixed(2);
+    document.getElementById('usageCalls').textContent = formatNum(todayData.calls);
+    document.getElementById('usageCallsLabel').textContent = todayData.calls + ' 次请求';
+    const tf = formatNum(todayData.input + todayData.output);
+    document.getElementById('usageTokens').textContent = tf;
+    document.getElementById('usageTokensLabel').textContent = formatNum(todayData.input) + ' / ' + formatNum(todayData.output);
+  } catch(e) { console.warn('[USAGE]', e.message); }
+}
+
 // ====== 启动：加载服务器历史 + 实时更新 ======
 (async function init() {
   // 1. 显示加载状态
@@ -398,7 +448,10 @@ async function tick() {
   if (serverError) statusParts.push('⚠️ ' + serverError.slice(0, 30));
   document.getElementById('headerSub').textContent = statusParts.join(' · ') || '加载中...';
 
-  // 5. 开始实时更新
+  // 5. 加载今日用量（消费/请求/tokens）
+  loadUsageStats();
+
+  // 6. 开始实时更新
   tick();
   setInterval(tick, 30000);
 })();

@@ -173,6 +173,16 @@ def save_record_to_excel(entry):
     wb.save(EXCEL_PATH)
 
 
+CONFIG_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def update_usage_stats():
+    """同步更新用量统计（请求次数/tokens/消费）"""
+    track_script = os.path.join(CONFIG_DIR, "track_usage.py")
+    if os.path.exists(track_script):
+        subprocess.run([sys.executable, track_script], capture_output=True, timeout=30)
+
+
 def main():
     try:
         data = fetch_balance()
@@ -229,7 +239,10 @@ def main():
         save_record_to_excel(entry)
         print(f"[EXCEL] {time_key} | ¥{bal:.2f} | Δ{delta:+.2f}")
 
-        # ── GitHub ──
+        # ── 用量统计 ──
+    update_usage_stats()
+
+    # ── GitHub ──
         push_to_github(len(history))
 
     except Exception as e:
