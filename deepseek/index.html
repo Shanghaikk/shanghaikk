@@ -6,81 +6,82 @@
 <title>🦐 DeepSeek 用量看板</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#0a0a0f;color:#e0e0e8;min-height:100vh;padding:16px}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#f5f5f7;color:#1d1d1f;min-height:100vh;padding:24px}
 .container{max-width:640px;margin:0 auto}
 
 /* Header */
 .header{text-align:center;margin-bottom:24px}
-.header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#4ade80,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.header .sub{font-size:12px;color:#555;margin-top:4px}
-.header .status{display:inline-block;font-size:10px;padding:3px 10px;border-radius:20px;margin-top:6px}
-.status.online{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.2)}
-.status.offline{background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.2)}
+.header h1{font-size:22px;font-weight:700;color:#1d1d1f}
+.header .sub{font-size:12px;color:#86868b;margin-top:4px}
+.header .status{display:inline-block;font-size:10px;padding:3px 12px;border-radius:20px;margin-top:6px}
+.status.online{background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9}
+.status.offline{background:#ffebee;color:#c62828;border:1px solid #ffcdd2}
 
 /* Balance Section */
-.balance-section{background:linear-gradient(135deg,#0d1f1a,#0a0a1a);border:1px solid rgba(74,222,128,.2);border-radius:20px;padding:24px;margin-bottom:16px;text-align:center}
-.balance-section .label{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:1px}
-.balance-section .amount{font-size:44px;font-weight:800;color:#4ade80;margin:4px 0 2px;letter-spacing:-2px}
-.balance-section .amount .cur{font-size:28px;font-weight:300;color:#4ade80;opacity:.7}
-.balance-section .meta{display:flex;justify-content:center;gap:24px;margin-top:8px;font-size:11px;color:#555}
+.balance-section{background:#ffffff;border:1px solid #e5e5ea;border-radius:16px;padding:24px;margin-bottom:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.balance-section .label{font-size:11px;color:#86868b;text-transform:uppercase;letter-spacing:1px}
+.balance-section .amount{font-size:44px;font-weight:700;color:#1d1d1f;margin:4px 0 2px;letter-spacing:-2px}
+.balance-section .amount .cur{font-size:28px;font-weight:400;color:#86868b}
+.balance-section .meta{display:flex;justify-content:center;gap:24px;margin-top:8px;font-size:11px;color:#86868b}
 .balance-section .meta span{display:flex;align-items:center;gap:4px}
-.balance-section .meta .val{color:#888}
+.balance-section .meta .val{color:#1d1d1f;font-weight:500}
 
 /* Stat Grid */
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.stat-card{background:#14141f;border:1px solid #1e1e2e;border-radius:14px;padding:14px 12px}
-.stat-card .l{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.5px}
-.stat-card .v{font-size:18px;font-weight:700;margin-top:4px}
-.stat-card .s{font-size:10px;color:#444;margin-top:2px}
-.stat-card.c1 .v{color:#f59e0b}
-.stat-card.c2 .v{color:#60a5fa}
-.stat-card.c3 .v{color:#a78bfa}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat-card{background:#ffffff;border:1px solid #e5e5ea;border-radius:12px;padding:16px 12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.stat-card .l{font-size:10px;color:#86868b;text-transform:uppercase;letter-spacing:.5px}
+.stat-card .v{font-size:20px;font-weight:700;margin-top:4px}
+.stat-card .s{font-size:10px;color:#aeaeb2;margin-top:2px}
+.stat-card.c1 .v{color:#e67e22}
+.stat-card.c2 .v{color:#2980b9}
+.stat-card.c3 .v{color:#8e44ad}
 
 /* Chart Section */
-.section-title{font-size:13px;font-weight:600;color:#666;margin:18px 0 10px;display:flex;align-items:center;gap:6px;border-bottom:1px solid #14141f;padding-bottom:8px}
-.chart-card{background:#14141f;border:1px solid #1e1e2e;border-radius:16px;padding:16px;margin-bottom:16px;min-height:120px}
+.section-title{font-size:13px;font-weight:600;color:#86868b;margin:16px 0 8px;display:flex;align-items:center;gap:6px}
+.chart-card{background:#ffffff;border:1px solid #e5e5ea;border-radius:12px;padding:16px;margin-bottom:12px;min-height:120px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.chart-header .tl{font-size:11px;color:#666;font-weight:500}
-.chart-header .tl .hl{color:#888}
-.chart-header .badge{font-size:10px;padding:2px 8px;border-radius:10px;background:#1e1e2e;color:#555}
+.chart-header .tl{font-size:11px;color:#86868b;font-weight:500}
+.chart-header .tl .hl{color:#1d1d1f}
+.chart-header .badge{font-size:10px;padding:2px 8px;border-radius:10px;background:#f5f5f7;color:#86868b;border:1px solid #e5e5ea}
 
 /* Bar Chart */
 .bar-list{display:flex;flex-direction:column}
 .bar-row{display:flex;align-items:center;gap:6px;padding:4px 0;min-height:30px}
 .bar-row .b-bal{font-size:12px;font-weight:600;min-width:56px;text-align:right}
-.bar-row .b-time{font-size:11px;color:#555;min-width:42px;text-align:center;font-weight:500}
-.bar-row .b-track{flex:1;height:18px;background:#1a1a28;border-radius:4px;overflow:hidden;min-width:60px}
+.bar-row .b-time{font-size:11px;color:#aeaeb2;min-width:42px;text-align:center;font-weight:500}
+.bar-row .b-track{flex:1;height:18px;background:#f2f2f7;border-radius:4px;overflow:hidden;min-width:60px}
 .bar-row .b-fill{height:100%;border-radius:4px;transition:width .3s}
 .bar-row .b-drop{font-size:12px;font-weight:600;min-width:50px;text-align:right}
-.bar-row.row-first .b-bal,.bar-row.row-first .b-time{color:#444}
-.bar-row.row-first .b-drop{color:#333}
+.bar-row.row-first .b-bal,.bar-row.row-first .b-time{color:#aeaeb2}
+.bar-row.row-first .b-drop{color:#c7c7cc}
 
 /* Info Grid */
-.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:16px}
-.info-item{background:#14141f;border:1px solid #1e1e2e;border-radius:12px;padding:12px}
-.info-item .il{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.5px}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:12px}
+.info-item{background:#ffffff;border:1px solid #e5e5ea;border-radius:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.info-item .il{font-size:10px;color:#86868b;text-transform:uppercase;letter-spacing:.5px}
 .info-item .iv{font-size:14px;font-weight:600;margin-top:3px}
 
 /* History Table */
-.history-card{background:#14141f;border:1px solid #1e1e2e;border-radius:16px;padding:16px;margin-bottom:16px}
-.history-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #0f0f18;font-size:12px}
+.history-card{background:#ffffff;border:1px solid #e5e5ea;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.history-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f2f7;font-size:12px}
 .history-row:last-child{border-bottom:none}
-.history-row .h-time{color:#666}
-.history-row .h-bal{font-weight:600;color:#4ade80}
-.history-row .h-drop{color:#f59e0b}
+.history-row .h-time{color:#aeaeb2}
+.history-row .h-bal{font-weight:600;color:#1d1d1f}
+.history-row .h-drop{color:#e67e22}
 
 /* Footer */
-.footer{text-align:center;padding:12px 0;font-size:10px;color:#222;border-top:1px solid #111}
-.footer .dot{color:#4ade80}
+.footer{text-align:center;padding:12px 0;font-size:10px;color:#aeaeb2}
+.footer .dot{color:#34c759}
 
 /* Empty */
-.empty{text-align:center;padding:30px;color:#333;font-size:13px}
+.empty{text-align:center;padding:30px;color:#aeaeb2;font-size:13px}
 
 @media(max-width:480px){
   .stat-grid{grid-template-columns:repeat(3,1fr);gap:6px}
   .stat-card{padding:10px}
   .balance-section .amount{font-size:36px}
   .balance-section .amount .cur{font-size:22px}
+  body{padding:16px}
 }
 </style>
 </head>
@@ -155,7 +156,7 @@ const DEEPSEEK_API_KEY = (function() {
 })();
 
 // ====== 数据存储 ======
-let balanceHistory = []; // [{t: ISO时间, b: 余额}]
+let balanceHistory = [];
 try {
   const saved = localStorage.getItem('ds_balance_history');
   if (saved) balanceHistory = JSON.parse(saved);
@@ -193,7 +194,6 @@ function renderChart(history, currentBalance) {
     return;
   }
 
-  // 按10分钟对齐
   const aligned = {};
   for (const h of history) {
     const t = new Date(h.t).getTime();
@@ -203,7 +203,6 @@ function renderChart(history, currentBalance) {
     }
   }
 
-  // 加入当前余额
   const now = Date.now();
   aligned[alignSlot(now)] = { t: alignSlot(now), b: currentBalance };
 
@@ -228,7 +227,6 @@ function renderChart(history, currentBalance) {
 
   let html = '';
 
-  // 表头：起始时刻
   const firstT = new Date(slots[0].t);
   html += '<div class="bar-row row-first">' +
     '<div class="b-bal">¥' + slots[0].b.toFixed(2) + '</div>' +
@@ -236,10 +234,9 @@ function renderChart(history, currentBalance) {
     '<div class="b-track"></div>' +
     '<div class="b-drop">—</div></div>';
 
-  // 消耗行
   for (const r of rows) {
     const pct = Math.max(3, (r.drop / maxDrop) * 100);
-    const color = r.drop > 0.15 ? '#f59e0b' : r.drop > 0.05 ? '#eab308' : '#4ade80';
+    const color = r.drop > 0.15 ? '#e67e22' : r.drop > 0.05 ? '#f1c40f' : '#27ae60';
     html += '<div class="bar-row">' +
       '<div class="b-bal" style="color:' + color + '">¥' + r.balance.toFixed(2) + '</div>' +
       '<div class="b-time">' + r.time + '</div>' +
@@ -256,7 +253,6 @@ function renderHistory(history) {
   const el = document.getElementById('historyArea');
   if (history.length < 2) { el.innerHTML = '<div class="empty">暂无记录</div>'; return; }
 
-  // 倒序显示（最新的在最上面）
   const reversed = [...history].reverse().slice(0, 30);
   let html = '';
   for (let i = 0; i < reversed.length; i++) {
@@ -285,7 +281,6 @@ function renderAll(data, isLive) {
   const cur = info.currency || 'CNY';
   const sym = cur === 'USD' ? '$' : '¥';
 
-  // 记录快照
   const last = balanceHistory[balanceHistory.length - 1];
   if (!last || Math.abs(last.b - bal) > 0.001 || Date.now() - new Date(last.t).getTime() > 120000) {
     balanceHistory.push({ t: new Date().toISOString(), b: bal });
@@ -293,20 +288,17 @@ function renderAll(data, isLive) {
     saveHistory();
   }
 
-  // Header
   document.getElementById('headerSub').textContent =
     (isLive ? '🔴 实时' : '⚫ 缓存') + ' · ' + balanceHistory.length + ' 条快照';
   const badge = document.getElementById('statusBadge');
   badge.textContent = avail ? (isLive ? '● 在线' : '● 缓存') : '✕ 已停用';
   badge.className = 'status ' + (avail ? 'online' : 'offline');
 
-  // Balance
   document.getElementById('balAmount').textContent = bal.toFixed(2);
   document.getElementById('balGranted').textContent = sym + granted.toFixed(2);
   document.getElementById('balTopped').textContent = sym + topped.toFixed(2);
   document.getElementById('balCurrency').textContent = cur;
 
-  // Stats
   const todayStart = new Date(); todayStart.setHours(0,0,0,0);
   const todaySamples = balanceHistory.filter(h => new Date(h.t).getTime() >= todayStart.getTime());
   const todayCost = todaySamples.length >= 2 ? Math.max(0, todaySamples[0].b - bal) : 0;
@@ -317,21 +309,16 @@ function renderAll(data, isLive) {
   document.getElementById('totalCost').textContent = sym + totalCost.toFixed(2);
   document.getElementById('snapshotCount').textContent = balanceHistory.length;
 
-  // 跟踪时长
   if (balanceHistory.length >= 2) {
     const first = new Date(balanceHistory[0].t);
     const hours = Math.round((Date.now() - first.getTime()) / 3600000 * 10) / 10;
     document.getElementById('trackDuration').textContent = hours + ' 小时';
   }
 
-  // 余额状态
   document.getElementById('balStatusInfo').textContent = avail ? '正常' : '已停用';
-  document.getElementById('balStatusInfo').style.color = avail ? '#4ade80' : '#ef4444';
+  document.getElementById('balStatusInfo').style.color = avail ? '#27ae60' : '#e74c3c';
 
-  // 图表
   renderChart(balanceHistory, bal);
-
-  // 历史
   renderHistory(balanceHistory);
 }
 
