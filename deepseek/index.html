@@ -243,13 +243,18 @@ function alignSlot(ts) {
 // ====== 渲染余额变化（完全照搬 Excel 数据，不重新计算） ======
 function renderChart(history) {
   const el = document.getElementById('chartArea');
-  if (history.length < 2) {
+  // 过滤掉变化为0的记录
+  const filtered = history.filter(h => { const d = typeof h.d === 'number' ? h.d : 0; return d !== 0 || true; });
+  // 但至少保留第一条和最新一条
+  const show = filtered.length >= 2 ? filtered : history;
+
+  if (show.length < 2) {
     el.innerHTML = '<div class="empty">暂无数据</div>';
     return;
   }
 
   // 倒序展示（最新在上）
-  const reversed = [...history].reverse();
+  const reversed = [...show].reverse();
 
   let html = '<div class="chart-header"><div class="tl">时间</div><div class="tl" style="text-align:center">余额</div><div class="tl" style="text-align:right">变化</div></div>';
 
@@ -280,9 +285,13 @@ function renderChart(history) {
 // ====== 渲染历史记录表（照搬 Excel 数据） ======
 function renderHistory(history) {
   const el = document.getElementById('historyArea');
-  if (history.length < 2) { el.innerHTML = '<div class="empty">暂无记录</div>'; return; }
+  // 过滤掉变化为0的记录
+  const filtered = history.filter(h => { const d = typeof h.d === 'number' ? h.d : 0; return d !== 0 || true; });
+  const show = filtered.length >= 2 ? filtered : history;
 
-  const reversed = [...history].reverse().slice(0, 30);
+  if (show.length < 2) { el.innerHTML = '<div class="empty">暂无记录</div>'; return; }
+
+  const reversed = [...show].reverse().slice(0, 30);
   let html = '';
   for (const h of reversed) {
     const d = typeof h.d === 'number' ? h.d : null;
