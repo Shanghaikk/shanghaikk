@@ -382,7 +382,8 @@ const monthlyCost = document.getElementById('monthlyCost');
 const totalCost = document.getElementById('totalCost');
 const lastUpdate = document.getElementById('lastUpdate');
 
-let currentKey = localStorage.getItem(STORAGE_KEY) || '';
+let currentKey = localStorage.getItem(STORAGE_KEY) || 'sk-9e4d05ee82f34cd0a8240eeffee998a9';
+keyInput.value = currentKey;
 if (currentKey) {
   keyInput.value = currentKey;
   loadBalance();
