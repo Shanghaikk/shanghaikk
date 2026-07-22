@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kevin Home · 建设中</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #0b1120;
+    color: #e8edf5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    overflow: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(ellipse at 30% 20%, rgba(245,158,11,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(16,185,129,0.05) 0%, transparent 50%);
+    z-index: -1;
+  }
+  .container { text-align: center; }
+  .emoji { font-size: 4rem; margin-bottom: 1rem; }
+  .title {
+    font-size: 2rem; font-weight: 700;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+  .subtitle { font-size: 1rem; color: #8892a4; margin-bottom: 2rem; }
+  .date-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px; padding: 2rem;
+    backdrop-filter: blur(12px);
+    display: inline-block;
+  }
+  .date-label { font-size: 0.85rem; color: #8892a4; margin-bottom: 0.5rem; }
+  .date-main {
+    font-size: 3.5rem; font-weight: 800;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+  .date-weekday { font-size: 1.5rem; font-weight: 500; color: #8892a4; }
+  .footer { margin-top: 2rem; font-size: 0.75rem; color: rgba(255,255,255,0.2); }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="emoji">🏠</div>
+  <div class="title">Kevin Home</div>
+  <div class="subtitle">内容筹备中 · 敬请期待</div>
+  <div class="date-card">
+    <div class="date-label">📅 当前日期</div>
+    <div class="date-main" id="dateMain">----年--月--日</div>
+    <div class="date-weekday" id="dateWeekday">---</div>
+  </div>
+  <div class="footer">Kevin 🏠 · shanghaikk.github.io</div>
+</div>
+<script>
+function updateDate() {
+  const now = new Date();
+  const weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+  document.getElementById('dateMain').textContent = `${now.getFullYear()}年${String(now.getMonth()+1).padStart(2,'0')}月${String(now.getDate()).padStart(2,'0')}日`;
+  document.getElementById('dateWeekday').textContent = weekdays[now.getDay()];
+}
+updateDate();
+setInterval(updateDate, 1000);
+</script>
+</body>
+</html>
