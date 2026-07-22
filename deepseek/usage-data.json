@@ -3,328 +3,67 @@
   "days": {
     "2026-06-23": {
       "calls": 113,
-      "input": 251945,
+      "input_cache_hit": 3043200,
+      "input_cache_miss": 251945,
       "output": 33366,
-      "cache": 3043200,
       "cost_usd": 0.129824,
-      "cost_cny": 0.95,
-      "hours": {
-        "05": {
-          "calls": 34,
-          "input": 99402,
-          "output": 9883,
-          "cache": 1392128,
-          "cost": 0.055663104
-        },
-        "08": {
-          "calls": 79,
-          "input": 152543,
-          "output": 23483,
-          "cache": 1651072,
-          "cost": 0.07416127599999997
-        }
-      }
+      "cost_cny": 0.95
     },
     "2026-06-24": {
       "calls": 556,
-      "input": 8062199,
+      "input_cache_hit": 19326848,
+      "input_cache_miss": 8062199,
       "output": 160738,
-      "cache": 19326848,
       "cost_usd": 1.714866,
-      "cost_cny": 12.52,
-      "hours": {
-        "00": {
-          "calls": 14,
-          "input": 11028,
-          "output": 2893,
-          "cache": 125568,
-          "cost": 0.005869864000000001
-        },
-        "01": {
-          "calls": 183,
-          "input": 7315962,
-          "output": 66142,
-          "cache": 6083328,
-          "cost": 1.213087624
-        },
-        "02": {
-          "calls": 88,
-          "input": 421577,
-          "output": 30257,
-          "cache": 5020544,
-          "cost": 0.20806797200000005
-        },
-        "06": {
-          "calls": 70,
-          "input": 160140,
-          "output": 18256,
-          "cache": 2462976,
-          "cost": 0.09649460800000004
-        },
-        "07": {
-          "calls": 17,
-          "input": 25126,
-          "output": 3739,
-          "cache": 551552,
-          "cost": 0.020008016
-        },
-        "08": {
-          "calls": 14,
-          "input": 27301,
-          "output": 6295,
-          "cache": 338304,
-          "cost": 0.015057251999999998
-        },
-        "09": {
-          "calls": 135,
-          "input": 89387,
-          "output": 28346,
-          "cache": 3406080,
-          "cost": 0.11582129999999997
-        },
-        "10": {
-          "calls": 35,
-          "input": 11678,
-          "output": 4810,
-          "cache": 1338496,
-          "cost": 0.04045960799999999
-        }
-      }
+      "cost_cny": 12.52
     },
     "2026-06-25": {
       "calls": 785,
-      "input": 1394345,
+      "input_cache_hit": 41853568,
+      "input_cache_miss": 1394345,
       "output": 232919,
-      "cache": 41853568,
       "cost_usd": 1.432326,
-      "cost_cny": 10.46,
-      "hours": {
-        "00": {
-          "calls": 19,
-          "input": 47432,
-          "output": 5918,
-          "cache": 354432,
-          "cost": 0.018221616
-        },
-        "01": {
-          "calls": 27,
-          "input": 57990,
-          "output": 5541,
-          "cache": 459776,
-          "cost": 0.022543808000000002
-        },
-        "02": {
-          "calls": 123,
-          "input": 147778,
-          "output": 38974,
-          "cache": 3995008,
-          "cost": 0.14346186399999997
-        },
-        "03": {
-          "calls": 134,
-          "input": 142482,
-          "output": 30394,
-          "cache": 6604544,
-          "cost": 0.213385032
-        },
-        "04": {
-          "calls": 8,
-          "input": 140101,
-          "output": 1080,
-          "cache": 334720,
-          "cost": 0.0292887
-        },
-        "06": {
-          "calls": 6,
-          "input": 15477,
-          "output": 3033,
-          "cache": 105088,
-          "cost": 0.005958484
-        },
-        "07": {
-          "calls": 361,
-          "input": 743212,
-          "output": 121570,
-          "cache": 24089088,
-          "cost": 0.8125837439999996
-        },
-        "08": {
-          "calls": 107,
-          "input": 99873,
-          "output": 26409,
-          "cache": 5910912,
-          "cost": 0.186882276
-        }
-      }
+      "cost_cny": 10.46
     },
     "2026-06-26": {
       "calls": 957,
-      "input": 4490898,
+      "input_cache_hit": 48792064,
+      "input_cache_miss": 4490898,
       "output": 275758,
-      "cache": 48792064,
       "cost_usd": 2.072116,
-      "cost_cny": 15.13,
-      "hours": {
-        "01": {
-          "calls": 58,
-          "input": 79140,
-          "output": 7138,
-          "cache": 1016064,
-          "cost": 0.04152803199999999
-        },
-        "02": {
-          "calls": 180,
-          "input": 307870,
-          "output": 39559,
-          "cache": 9618432,
-          "cost": 0.323494416
-        },
-        "03": {
-          "calls": 215,
-          "input": 308943,
-          "output": 54012,
-          "cache": 13287552,
-          "cost": 0.43042683600000003
-        },
-        "05": {
-          "calls": 128,
-          "input": 1017646,
-          "output": 51068,
-          "cache": 5039104,
-          "cost": 0.29786439199999987
-        },
-        "06": {
-          "calls": 73,
-          "input": 1124237,
-          "output": 38320,
-          "cache": 2981632,
-          "cost": 0.2516084760000001
-        },
-        "07": {
-          "calls": 186,
-          "input": 1517462,
-          "output": 57439,
-          "cache": 8585984,
-          "cost": 0.468935152
-        },
-        "08": {
-          "calls": 100,
-          "input": 106827,
-          "output": 23545,
-          "cache": 6650880,
-          "cost": 0.20777302000000009
-        },
-        "09": {
-          "calls": 17,
-          "input": 28773,
-          "output": 4677,
-          "cache": 1612416,
-          "cost": 0.05048542799999999
-        }
-      }
+      "cost_cny": 15.13
     },
     "2026-06-29": {
       "calls": 9,
-      "input": 20147,
+      "input_cache_hit": 150912,
+      "input_cache_miss": 20147,
       "output": 765,
-      "cache": 150912,
       "cost_usd": 0.00726,
-      "cost_cny": 0.05,
-      "hours": {
-        "05": {
-          "calls": 9,
-          "input": 20147,
-          "output": 765,
-          "cache": 150912,
-          "cost": 0.007260315999999999
-        }
-      }
+      "cost_cny": 0.05
     },
     "2026-07-02": {
       "calls": 6,
-      "input": 21806,
+      "input_cache_hit": 100352,
+      "input_cache_miss": 21806,
       "output": 5244,
-      "cache": 100352,
       "cost_usd": 0.007331,
-      "cost_cny": 0.05,
-      "hours": {
-        "02": {
-          "calls": 6,
-          "input": 21806,
-          "output": 5244,
-          "cache": 100352,
-          "cost": 0.007331016
-        }
-      }
+      "cost_cny": 0.05
     },
     "2026-07-21": {
       "calls": 33,
-      "input": 231880,
+      "input_cache_hit": 691584,
+      "input_cache_miss": 231880,
       "output": 10507,
-      "cache": 691584,
       "cost_usd": 0.05477,
-      "cost_cny": 0.4,
-      "hours": {
-        "06": {
-          "calls": 18,
-          "input": 179564,
-          "output": 6403,
-          "cache": 449792,
-          "cost": 0.03952597600000002
-        },
-        "07": {
-          "calls": 7,
-          "input": 16384,
-          "output": 920,
-          "cache": 113280,
-          "cost": 0.0057232
-        },
-        "15": {
-          "calls": 8,
-          "input": 35932,
-          "output": 3184,
-          "cache": 128512,
-          "cost": 0.009520336
-        }
-      }
+      "cost_cny": 0.4
     },
     "2026-07-22": {
-      "calls": 189,
-      "input": 454202,
-      "output": 106456,
-      "cache": 13600768,
-      "cost_usd": 0.474217,
-      "cost_cny": 3.46,
-      "hours": {
-        "02": {
-          "calls": 25,
-          "input": 65328,
-          "output": 9924,
-          "cache": 517376,
-          "cost": 0.026411168000000002
-        },
-        "03": {
-          "calls": 103,
-          "input": 203536,
-          "output": 48951,
-          "cache": 5517952,
-          "cost": 0.19670397600000006
-        },
-        "04": {
-          "calls": 32,
-          "input": 96213,
-          "output": 23961,
-          "cache": 3413760,
-          "cost": 0.11576418
-        },
-        "05": {
-          "calls": 29,
-          "input": 89125,
-          "output": 23620,
-          "cache": 4151680,
-          "cost": 0.13533814
-        }
-      }
+      "calls": 216,
+      "input_cache_hit": 18225024,
+      "input_cache_miss": 499120,
+      "output": 121436,
+      "cost_usd": 0.61418,
+      "cost_cny": 4.48
     }
   }
 }

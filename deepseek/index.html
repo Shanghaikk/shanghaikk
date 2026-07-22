@@ -139,7 +139,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
     <div class="stat-card c3">
       <div class="l">🔤 Tokens</div>
       <div class="v" id="usageTokens">0</div>
-      <div class="s" id="usageTokensLabel">input / output</div>
+      <div class="s" id="usageTokensLabel">总数</div>
+      <div style="margin-top:6px;font-size:9px;color:#aeaeb2;line-height:1.6">
+        <div>✅ 缓存命中 <span id="tokHit" style="font-weight:600;color:#27ae60">0</span></div>
+        <div>❌ 缓存未命中 <span id="tokMiss" style="font-weight:600;color:#e67e22">0</span></div>
+        <div>📤 输出 <span id="tokOut" style="font-weight:600;color:#2980b9">0</span></div>
+      </div>
     </div>
   </div>
 
@@ -383,8 +388,12 @@ async function loadUsageStats() {
     document.getElementById('usageCalls').textContent = formatNum(todayData.calls);
     document.getElementById('usageCallsLabel').textContent = todayData.calls + ' 次请求';
     const tf = formatNum(todayData.input + todayData.output);
-    document.getElementById('usageTokens').textContent = tf;
-    document.getElementById('usageTokensLabel').textContent = formatNum(todayData.input) + ' / ' + formatNum(todayData.output);
+    const totalTok = (todayData.input_cache_hit || 0) + (todayData.input_cache_miss || 0) + (todayData.output || 0);
+    document.getElementById('usageTokens').textContent = formatNum(totalTok);
+    document.getElementById('usageTokensLabel').textContent = formatNum(totalTok) + ' 总tokens';
+    document.getElementById('tokHit').textContent = formatNum(todayData.input_cache_hit || 0);
+    document.getElementById('tokMiss').textContent = formatNum(todayData.input_cache_miss || 0);
+    document.getElementById('tokOut').textContent = formatNum(todayData.output || 0);
   } catch(e) { console.warn('[USAGE]', e.message); }
 }
 
