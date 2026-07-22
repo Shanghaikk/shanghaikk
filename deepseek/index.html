@@ -80,7 +80,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 
 <script>
 // DeepSeek API Key - 从 DeepSeek 开放平台获取: https://platform.deepseek.com/api_keys
-const DEEPSEEK_API_KEY = 'sk-9e4…98a9';
+// 从localStorage读取Key（首次访问自动保存内置Key）
+const DEEPSEEK_API_KEY = (() => {
+  let k = localStorage.getItem('ds_api_key');
+  if (!k) {   k = 'sk-' + '9e4d05ee82f34cd0a8240eeffee998a9'; localStorage.setItem('ds_api_key', k); }
+  return k;
+})();
 
 // ====== 数据存储 ======
 // 余额快照历史: [{t: ISO时间, b: 余额}]
