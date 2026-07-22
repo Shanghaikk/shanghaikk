@@ -93,7 +93,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
     <div class="status" id="statusBadge">● 连接中</div>
   </div>
 
-  <!-- 余额 -->
+  <!-- 余额 + 累计消耗 -->
   <div class="balance-section">
     <div class="label">💰 账户余额</div>
     <div class="amount"><span class="cur">¥</span><span id="balAmount">0.00</span></div>
@@ -102,20 +102,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
       <span>充值 <span class="val" id="balTopped">0.00</span></span>
       <span>币种 <span class="val" id="balCurrency">CNY</span></span>
     </div>
-  </div>
-
-  <!-- 统计 -->
-  <div class="stat-grid">
-    <div class="stat-card c1">
-      <div class="l">累计消耗</div>
-      <div class="v" id="totalCost">¥0.00</div>
-      <div class="s" id="totalSnapshot">依据服务器Excel数据</div>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid #e5e5ea;">
+      <div style="font-size:11px;color:#86868b;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">累计消耗</div>
+      <div style="font-size:28px;font-weight:700;color:#e67e22;letter-spacing:-1px;"><span id="totalCost">¥0.00</span></div>
+      <div style="font-size:10px;color:#aeaeb2;margin-top:2px;"><span id="totalSnapshot">依据服务器Excel数据</span></div>
     </div>
   </div>
 
   <!-- 用量三板块（仿 DeepSeek 开放平台） -->
   <div class="section-title" style="margin-top:24px">🔋 今日用量</div>
-  <div class="stat-grid" id="usageStats">
+  <div class="stat-grid" id="usageStats" style="grid-template-columns:repeat(3,1fr)">
     <div class="stat-card c1">
       <div class="l">💰 消费金额</div>
       <div class="v" id="usageCost">¥0.00</div>
