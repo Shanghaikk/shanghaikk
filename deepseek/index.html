@@ -157,6 +157,7 @@ const DEEPSEEK_API_KEY = (function() {
 
 // ====== 数据存储 ======
 let balanceHistory = [];
+const MAX_HISTORY = 50000; // 约 347 天 × 144 条/天
 try {
   const saved = localStorage.getItem('ds_balance_history');
   if (saved) balanceHistory = JSON.parse(saved);
@@ -164,6 +165,20 @@ try {
 
 function saveHistory() {
   try { localStorage.setItem('ds_balance_history', JSON.stringify(balanceHistory)); } catch(e) {}
+}
+
+// ====== 加载服务器端全量历史 ======
+async function loadServerHistory() {
+  try {
+    const res = await fetch('balance-data.json?t=' + Date.now());
+    if (!res.ok) { console.warn('Server: HTTP ' + res.status); return null; }
+    const data = await res.json();
+    if (!Array.isArray(data)) { return null; }
+    return data;
+  } catch(e) {
+    console.warn('Server: ' + e.message);
+    return null;
+  }
 }
 
 // ====== API ======
@@ -284,7 +299,7 @@ function renderAll(data, isLive) {
   const last = balanceHistory[balanceHistory.length - 1];
   if (!last || Math.abs(last.b - bal) > 0.001 || Date.now() - new Date(last.t).getTime() > 120000) {
     balanceHistory.push({ t: new Date().toISOString(), b: bal });
-    if (balanceHistory.length > 500) balanceHistory = balanceHistory.slice(-500);
+    if (balanceHistory.length > MAX_HISTORY) balanceHistory = balanceHistory.slice(-MAX_HISTORY);
     saveHistory();
   }
 
@@ -340,8 +355,30 @@ async function tick() {
   }
 }
 
-tick();
-setInterval(tick, 30000);
+// ====== 启动：加载服务器历史 + 实时更新 ======
+(async function init() {
+  // 1. 先从服务器拉取全量历史（跨设备共享）
+  const serverData = await loadServerHistory();
+  if (serverData && serverData.length > 0) {
+    // 2. 合并去重：补充本地没有的记录
+    const localKeys = new Set(balanceHistory.map(h => h.t.slice(0, 16)));
+    let added = 0;
+    for (const h of serverData) {
+      if (typeof h.b === 'number' && !localKeys.has(h.t.slice(0, 16))) {
+        balanceHistory.push(h);
+        added++;
+      }
+    }
+    if (added > 0) {
+      balanceHistory.sort((a, b) => new Date(a.t) - new Date(b.t));
+      if (balanceHistory.length > MAX_HISTORY) balanceHistory = balanceHistory.slice(-MAX_HISTORY);
+      saveHistory();
+    }
+  }
+  // 3. 开始实时更新
+  tick();
+  setInterval(tick, 30000);
+})();
 </script>
 </body>
 </html>
