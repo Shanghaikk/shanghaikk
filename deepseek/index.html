@@ -233,8 +233,9 @@ function alignSlot(ts) {
 // ====== 渲染余额变化（完全照搬 Excel 数据，不重新计算） ======
 function renderChart(history) {
   const el = document.getElementById('chartArea');
-  // 过滤掉变化为0的记录
-  const filtered = history.filter(h => { const d = typeof h.d === 'number' ? h.d : null; return d !== 0; });
+  // 过滤掉变化为0的记录（但保留第一条起始记录）
+  const firstT = history.length > 0 ? history[0].t : null;
+  const filtered = history.filter(h => h.t === firstT || (typeof h.d === 'number' ? h.d : null) !== 0);
   const show = filtered.length >= 2 ? filtered : history;
 
   if (show.length < 2) {
@@ -274,8 +275,9 @@ function renderChart(history) {
 // ====== 渲染历史记录表（照搬 Excel 数据） ======
 function renderHistory(history) {
   const el = document.getElementById('historyArea');
-  // 过滤掉变化为0的记录
-  const filtered = history.filter(h => { const d = typeof h.d === 'number' ? h.d : null; return d !== 0; });
+  // 过滤掉变化为0的记录（但保留第一条起始记录）
+  const firstT = history.length > 0 ? history[0].t : null;
+  const filtered = history.filter(h => h.t === firstT || (typeof h.d === 'number' ? h.d : null) !== 0);
   const show = filtered.length >= 2 ? filtered : history;
 
   if (show.length < 2) { el.innerHTML = '<div class="empty">暂无记录</div>'; return; }
