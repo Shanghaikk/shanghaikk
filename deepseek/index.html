@@ -148,7 +148,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 
 <script>
 // ====== DeepSeek API Key ======
-const DEEPSEEK_API_KEY = *** => {
+const DEEPSEEK_API_KEY = (function() {
   let k = localStorage.getItem('ds_api_key');
   if (!k) { k = 'sk-' + '9e4d05ee82f34cd0a8240eeffee998a9'; localStorage.setItem('ds_api_key', k); }
   return k;
