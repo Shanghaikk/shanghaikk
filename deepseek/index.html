@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦐 虾虾 · 费用看板</title>
+<title>🦐 虾虾 · DeepSeek 费用看板</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#0a0a0f;color:#e0e0e8;min-height:100vh;padding:16px}
@@ -39,89 +39,310 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .info-card .il{font-size:10px;color:#666;text-transform:uppercase}
 .info-card .iv{font-size:14px;font-weight:600;margin-top:2px}
 .footer{text-align:center;margin-top:16px;padding:12px 0;font-size:11px;color:#333;border-top:1px solid #1a1a24}
+.footer .live{color:#4ade80}
 @media(max-width:480px){.hero{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="container">
   <div class="header">
-    <h1>🦐 虾虾 · 费用看板</h1>
+    <h1>🦐 虾虾 · DeepSeek 费用看板</h1>
     <div class="meta" id="metaInfo">加载中...</div>
   </div>
   <div class="hero">
     <div class="hero-card hero-balance">
-      <div class="hl">💰 余额</div>
+      <div class="hl">💰 实时余额</div>
       <div class="hv" id="balDisplay">—</div>
       <div class="hs" id="balUpdate">查询中...</div>
     </div>
     <div class="hero-card hero-todaycost">
-      <div class="hl">📉 今日花费</div>
+      <div class="hl">📉 今日消耗</div>
       <div class="hv" id="costDisplay">—</div>
       <div class="hs" id="costSub"></div>
     </div>
     <div class="hero-card hero-hours">
-      <div class="hl">⏱ 今日活跃</div>
+      <div class="hl">⏱ 已活跃</div>
       <div class="hv" id="hoursDisplay">—</div>
       <div class="hs" id="hoursSub"></div>
     </div>
     <div class="hero-card hero-total">
       <div class="hl">📊 累计消费</div>
       <div class="hv" id="totalDisplay">—</div>
-      <div class="hs">自从跟踪以来</div>
+      <div class="hs" id="totalSub">自本页面启动以来</div>
     </div>
   </div>
-  <div class="section-title">📊 余额变化（每10分钟）</div>
-  <div class="chart-area" id="chartArea"><div style="color:#444;padding:30px;text-align:center">加载中...</div></div>
-  <div class="section-title">📋 详情</div>
+  <div class="section-title">📊 余额变化 · 每10分钟</div>
+  <div class="chart-area" id="chartArea"><div style="color:#444;padding:30px;text-align:center">等待数据...</div></div>
+  <div class="section-title">📋 DeepSeek 账户信息</div>
   <div class="info-grid" id="infoGrid"></div>
-  <div class="footer">🕐 <span id="footerTime">—</span> · 每30s刷新</div>
+  <div class="footer">🕐 <span id="footerTime">—</span> · <span class="live">●</span> 每30秒自动刷新</div>
 </div>
-<script>
-const DK="sk-9e4…98a9";
-const AT = 'Bea' + 'rer ' + DK;
-var II=[{t:"2026-07-21T07:04:00Z",b:9.37},{t:"2026-07-21T07:26:00Z",b:9.12},{t:"2026-07-21T07:37:00Z",b:9.01},{t:"2026-07-21T07:47:00Z",b:8.81},{t:"2026-07-21T08:05:00Z",b:8.33},{t:"2026-07-21T08:15:00Z",b:7.89},{t:"2026-07-21T08:33:00Z",b:7.80},{t:"2026-07-21T08:47:00Z",b:7.34},{t:"2026-07-21T10:27:00Z",b:5.35},{t:"2026-07-21T11:04:00Z",b:5.28}];
-var H=[];try{var s=localStorage.getItem('dh');H=s?JSON.parse(s):JSON.parse(JSON.stringify(II));localStorage.setItem('dh',JSON.stringify(H))}catch(e){H=JSON.parse(JSON.stringify(II))}
-function sv(){try{localStorage.setItem('dh',JSON.stringify(H))}catch(e){}}
-function gb(t,p){var b=p[0].b;for(var i=0;i<p.length;i++){if(p[i].t<=t)b=p[i].b;else break}return b}
-function rd(ba){
-var bl=ba||H[H.length-1].b,f=H[0].b,ft=new Date(H[0].t).getTime(),n=Date.now();
-document.getElementById('balDisplay').textContent='¥'+bl.toFixed(2);
-document.getElementById('balUpdate').textContent=ba?'🔴 '+new Date().toLocaleString('zh-CN',{timeZone:'Asia/Shanghai'}):'⚫ 缓存';
-document.getElementById('totalDisplay').textContent='¥'+Math.max(0,f-bl).toFixed(2);
-document.getElementById('metaInfo').textContent='🔴 实时 · '+H.length+' 条';
-document.getElementById('infoGrid').innerHTML='<div class="info-card"><div class="il">模型</div><div class="iv">deepseek-v4-flash</div></div><div class="info-card"><div class="il">快照</div><div class="iv">'+H.length+'</div></div><div class="info-card"><div class="il">首次</div><div class="iv">'+new Date(ft).toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai'})+'</div></div>';
-var ps=H.map(function(h){return{t:new Date(h.t).getTime(),b:h.b}});
-if(ba!=null&&Date.now()-ps[ps.length-1].t>10000)ps.push({t:Date.now(),b:bl});
-ps.sort(function(a,b){return a.t-b.t});
-var f2=ps[0].t,s2=Math.floor(f2/600000)*600000,e2=Math.ceil(Date.now()/600000)*600000,rs=[],md=0.01;
-for(var t=s2;t<e2;t+=600000){var b1=gb(t,ps),b2=gb(t+600000,ps),dr=Math.max(0,b1-b2),lb=new Date(t).toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit',timeZone:'Asia/Shanghai'});rs.push({l:lb,b:b1,d:dr});if(dr>md)md=dr}
-var totalDrop=0,activeCnt=0;
-for(var i=0;i<rs.length;i++){totalDrop+=rs[i].d;if(rs[i].d>0)activeCnt++}
-document.getElementById('costDisplay').textContent='¥'+totalDrop.toFixed(2);
-document.getElementById('costSub').textContent='≈ $'+(totalDrop/7.2).toFixed(4)+' · '+activeCnt+' 个时段';
-document.getElementById('hoursDisplay').textContent=(activeCnt*10)+'分钟';
-document.getElementById('hoursSub').textContent='有消费的时段 ×10 分钟';
-var hh='';
-if(rs[0]){hh+='<div class="bar-row bar-row-0"><div class="bar-bal" style="color:#555">¥'+rs[0].b.toFixed(2)+'</div><div class="bar-time" style="color:#555">'+rs[0].l+'</div><div class="bar-track-wrap"></div><div class="bar-drop" style="color:#444">—</div></div>'}
-for(var i=1;i<rs.length;i++){var r=rs[i];if(r.d<=0)continue;var w=Math.max(4,(r.d/md)*280),cl=r.d>0.15?'#f59e0b':r.d>0.05?'#eab308':'#4ade80';hh+='<div class="bar-row"><div class="bar-bal" style="color:'+cl+'">¥'+r.b.toFixed(2)+'</div><div class="bar-time" style="color:#888">'+r.l+'</div><div class="bar-track-wrap"><div class="bar-fill" style="width:'+w+'px;background:'+cl+'"></div></div><div class="bar-drop" style="color:'+cl+'">¥'+r.d.toFixed(2)+'</div></div>'}
-document.getElementById('chartArea').innerHTML=hh}
 
-function fb(){
-  fetch('https://api.deepseek.com/user/balance',{headers:{'Authorization':AT}})
-  .then(function(r){if(!r.ok)throw Error();return r.json()})
-  .then(function(d){
-    if(d.is_available&&d.balance_infos&&d.balance_infos.length>0){
-      var b=parseFloat(d.balance_infos[0].total_balance),l=H[H.length-1];
-      if(!l||Math.abs(l.b-b)>0.001||Date.now()-new Date(l.t).getTime()>120000){
-        H.push({t:new Date().toISOString(),b:b});
-        if(H.length>200)H=H.slice(-200);sv()
-      }
-      rd(b)
-    }
-  }).catch(function(){rd()})
+<script>
+// DeepSeek API Key - 从 DeepSeek 开放平台获取: https://platform.deepseek.com/api_keys
+const DEEPSEEK_API_KEY = 'sk-9e4…98a9';
+
+// ====== 数据存储 ======
+// 余额快照历史: [{t: ISO时间, b: 余额}]
+let balanceHistory = [];
+
+// 从 localStorage 恢复历史
+try {
+  const saved = localStorage.getItem('ds_balance_history');
+  if (saved) balanceHistory = JSON.parse(saved);
+} catch(e) {}
+
+// 保存到 localStorage
+function saveHistory() {
+  try {
+    localStorage.setItem('ds_balance_history', JSON.stringify(balanceHistory));
+  } catch(e) {}
 }
-fb();setInterval(fb,30000);
-setInterval(function(){var d=new Date();document.getElementById('footerTime').textContent=d.toLocaleString('zh-CN',{timeZone:'Asia/Shanghai'})},1000);
+
+// ====== DeepSeek API ======
+const API_BASE = 'https://api.deepseek.com';
+
+/**
+ * 查询账户余额
+ * 与 DeepSeek 开放平台显示的余额完全一致
+ * API: GET https://api.deepseek.com/user/balance
+ * 返回: { is_available, balance_infos: [{ total_balance, granted_balance, topped_up_currency }] }
+ */
+async function fetchBalance() {
+  const res = await fetch(`${API_BASE}/user/balance`, {
+    headers: {
+      'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+      'Accept': 'application/json'
+    }
+  });
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('API Key 无效');
+    if (res.status === 429) throw new Error('请求太频繁');
+    throw new Error(`HTTP ${res.status}`);
+  }
+  return await res.json();
+}
+
+// ====== 渲染 ======
+function render(data, isLive) {
+  const info = data.balance_infos?.[0];
+  if (!info) return;
+
+  const now = Date.now();
+  const totalBalance = parseFloat(info.total_balance || '0');
+  const grantedBalance = parseFloat(info.granted_balance || '0');
+  const toppedUpBalance = parseFloat(info.topped_up_balance || '0');
+  const currency = info.currency || 'CNY';
+  const isAvailable = data.is_available;
+  const currencySymbol = currency === 'USD' ? '$' : '¥';
+
+  // 记录快照（仅当余额变化或超过2分钟时）
+  const last = balanceHistory[balanceHistory.length - 1];
+  if (!last || Math.abs(last.b - totalBalance) > 0.001 || (now - new Date(last.t).getTime()) > 120000) {
+    balanceHistory.push({ t: new Date().toISOString(), b: totalBalance });
+    // 最多保留 500 条
+    if (balanceHistory.length > 500) balanceHistory = balanceHistory.slice(-500);
+    saveHistory();
+  }
+
+  // --- 顶部四个卡片 ---
+
+  // 1. 实时余额
+  document.getElementById('balDisplay').textContent = currencySymbol + totalBalance.toFixed(2);
+  document.getElementById('balUpdate').textContent = isLive ? '🔴 实时' : '⚫ 缓存';
+
+  // 2. 今日消耗（基于余额变化计算）
+  // 用今天的第一个快照和最后一个快照之差
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todaySamples = balanceHistory.filter(h => new Date(h.t).getTime() >= todayStart.getTime());
+  let todayCost = 0;
+  if (todaySamples.length >= 2) {
+    const firstToday = todaySamples[0].b;
+    const lastToday = todaySamples[todaySamples.length - 1].b;
+    todayCost = Math.max(0, firstToday - lastToday);
+  }
+  // 也要算上当前余额和最近快照的差值（如果有不包含在历史里的消耗）
+  if (todaySamples.length > 0) {
+    const latestHist = todaySamples[todaySamples.length - 1].b;
+    todayCost = Math.max(todayCost, latestHist - totalBalance);
+  }
+  document.getElementById('costDisplay').textContent = currencySymbol + todayCost.toFixed(2);
+  const activePeriods = todaySamples.filter(s => {
+    const idx = balanceHistory.indexOf(s);
+    if (idx > 0) {
+      const prev = balanceHistory[idx - 1];
+      return prev.b - s.b > 0.001;
+    }
+    return false;
+  }).length;
+  document.getElementById('costSub').textContent = activePeriods + ' 次余额变动';
+
+  // 3. 活跃时间
+  const activeMins = activePeriods * 10; // 每次快照间隔10分钟算活跃
+  document.getElementById('hoursDisplay').textContent = activeMins + '分钟';
+  document.getElementById('hoursSub').textContent = activePeriods + ' 个活跃时段';
+
+  // 4. 累计消费
+  const firstBalance = balanceHistory.length > 0 ? balanceHistory[0].b : totalBalance;
+  const totalCost = Math.max(0, firstBalance - totalBalance);
+  document.getElementById('totalDisplay').textContent = currencySymbol + totalCost.toFixed(2);
+
+  // 元信息
+  document.getElementById('metaInfo').textContent =
+    (isLive ? '🔴 实时连接' : '⚫ 缓存') + ' · ' + balanceHistory.length + ' 条快照' +
+    ' · ' + (isAvailable ? '账户正常' : '⚠️ 已停用');
+
+  // --- 余额变化图 ---
+  renderChart(balanceHistory, totalBalance, currencySymbol);
+
+  // --- 信息详情 ---
+  document.getElementById('infoGrid').innerHTML = `
+    <div class="info-card">
+      <div class="il">模型</div>
+      <div class="iv">deepseek-v4-flash</div>
+    </div>
+    <div class="info-card">
+      <div class="il">快照数</div>
+      <div class="iv">${balanceHistory.length}</div>
+    </div>
+    <div class="info-card">
+      <div class="il">账户状态</div>
+      <div class="iv" style="color:${isAvailable ? '#4ade80' : '#ef4444'}">${isAvailable ? '正常' : '已停用'}</div>
+    </div>
+    <div class="info-card">
+      <div class="il">币种</div>
+      <div class="iv">${currency} (${currencySymbol})</div>
+    </div>
+    <div class="info-card">
+      <div class="il">赠送余额</div>
+      <div class="iv" style="color:#4ade80">${currencySymbol}${grantedBalance.toFixed(2)}</div>
+    </div>
+    <div class="info-card">
+      <div class="il">充值余额</div>
+      <div class="iv" style="color:#f59e0b">${currencySymbol}${toppedUpBalance.toFixed(2)}</div>
+    </div>
+  `;
+}
+
+function renderChart(history, currentBalance, symbol) {
+  if (history.length < 2) {
+    document.getElementById('chartArea').innerHTML =
+      '<div style="color:#444;padding:30px;text-align:center">数据不足，继续采样中...</div>';
+    return;
+  }
+
+  // 整理时间线：从第一个快照所在小时整点开始，到当前时间结束
+  const points = history.map(h => ({ t: new Date(h.t).getTime(), b: h.b }));
+  
+  // 加上当前余额作为最新的点（如果最新的快照不是当前余额）
+  const latestPoint = points[points.length - 1];
+  if (Math.abs(latestPoint.b - currentBalance) > 0.001) {
+    points.push({ t: Date.now(), b: currentBalance });
+  }
+
+  // 按10分钟区间分组
+  const firstTime = points[0].t;
+  const lastTime = points[points.length - 1].t;
+  const interval = 10 * 60 * 1000; // 10分钟
+  
+  let segments = [];
+  for (let t = firstTime; t <= lastTime; t += interval) {
+    const tEnd = t + interval;
+    // 找到这个区间内的余额
+    const beforePoints = points.filter(p => p.t <= t);
+    const duringPoints = points.filter(p => p.t > t && p.t <= tEnd);
+    const bal = beforePoints.length > 0 ? beforePoints[beforePoints.length - 1].b : currentBalance;
+    
+    // 消耗 = 这个区间开始时的余额 - 这个区间结束时的余额
+    const nextPoints = points.filter(p => p.t > t && p.t <= tEnd);
+    let endBal = bal;
+    if (nextPoints.length > 0) {
+      endBal = nextPoints[nextPoints.length - 1].b;
+    } else if (beforePoints.length > 0) {
+      const lastInSegment = points.filter(p => p.t <= tEnd);
+      endBal = lastInSegment.length > 0 ? lastInSegment[lastInSegment.length - 1].b : bal;
+    }
+    
+    const drop = Math.max(0, bal - endBal);
+    const label = new Date(t).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Shanghai' });
+    
+    segments.push({ label, balance: bal, drop });
+  }
+
+  // 找到最大消耗值用于柱状图缩放
+  const maxDrop = Math.max(0.01, ...segments.map(s => s.drop));
+
+  // 渲染柱状图
+  let html = '';
+  
+  // 第一行：显示最早余额（灰色）
+  if (segments.length > 0) {
+    html += `<div class="bar-row bar-row-0">
+      <div class="bar-bal" style="color:#555">${symbol}${segments[0].balance.toFixed(2)}</div>
+      <div class="bar-time" style="color:#555">${segments[0].label}</div>
+      <div class="bar-track-wrap"></div>
+      <div class="bar-drop" style="color:#444">—</div>
+    </div>`;
+  }
+
+  // 后续行：只显示有消耗的时段
+  for (let i = 1; i < segments.length; i++) {
+    const s = segments[i];
+    if (s.drop <= 0) continue; // 无消耗不显示
+    
+    const widthPct = Math.max(4, (s.drop / maxDrop) * 100);
+    const color = s.drop > 0.15 ? '#f59e0b' : s.drop > 0.05 ? '#eab308' : '#4ade80';
+    
+    html += `<div class="bar-row">
+      <div class="bar-bal" style="color:${color}">${symbol}${s.balance.toFixed(2)}</div>
+      <div class="bar-time" style="color:#888">${s.label}</div>
+      <div class="bar-track-wrap">
+        <div class="bar-fill" style="width:${widthPct}%;background:${color}"></div>
+      </div>
+      <div class="bar-drop" style="color:${color}">${symbol}${s.drop.toFixed(2)}</div>
+    </div>`;
+  }
+
+  if (!html) {
+    html = '<div style="color:#444;padding:20px;text-align:center">暂无消耗记录</div>';
+  }
+
+  document.getElementById('chartArea').innerHTML = html;
+}
+
+// ====== 主循环 ======
+async function tick() {
+  const now = new Date();
+  document.getElementById('footerTime').textContent =
+    now.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
+
+  try {
+    const data = await fetchBalance();
+    render(data, true);
+  } catch (err) {
+    // 如果 API 失败，尝试用缓存数据渲染
+    console.error('获取余额失败:', err.message);
+    if (balanceHistory.length > 0) {
+      const lastBal = balanceHistory[balanceHistory.length - 1].b;
+      render({
+        is_available: true,
+        balance_infos: [{
+          total_balance: lastBal.toString(),
+          granted_balance: '0',
+          topped_up_balance: '0',
+          currency: 'CNY'
+        }]
+      }, false);
+    }
+  }
+}
+
+// 立即执行一次
+tick();
+
+// 每30秒执行一次，永远不停止
+setInterval(tick, 30000);
 </script>
 </body>
 </html>
