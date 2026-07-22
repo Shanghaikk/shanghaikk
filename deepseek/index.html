@@ -27,7 +27,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .balance-section .meta .val{color:#1d1d1f;font-weight:500}
 
 /* Stat Grid */
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:12px}
 .stat-card{background:#ffffff;border:1px solid #e5e5ea;border-radius:12px;padding:16px 12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .stat-card .l{font-size:10px;color:#86868b;text-transform:uppercase;letter-spacing:.5px}
 .stat-card .v{font-size:20px;font-weight:700;margin-top:4px}
@@ -77,7 +77,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .empty{text-align:center;padding:30px;color:#aeaeb2;font-size:13px}
 
 @media(max-width:480px){
-  .stat-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+  .stat-grid{grid-template-columns:1fr;gap:6px}
   .stat-card{padding:10px}
   .balance-section .amount{font-size:36px}
   .balance-section .amount .cur{font-size:22px}
@@ -107,19 +107,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
   <!-- 统计 -->
   <div class="stat-grid">
     <div class="stat-card c1">
-      <div class="l">今日消耗</div>
-      <div class="v" id="todayCost">¥0.00</div>
-      <div class="s" id="todaySnapshot">--</div>
-    </div>
-    <div class="stat-card c2">
       <div class="l">累计消耗</div>
       <div class="v" id="totalCost">¥0.00</div>
-      <div class="s" id="totalSnapshot">自跟踪以来</div>
-    </div>
-    <div class="stat-card c3">
-      <div class="l">快照数</div>
-      <div class="v" id="snapshotCount">0</div>
-      <div class="s" id="trackDuration">刚刚开始</div>
+      <div class="s" id="totalSnapshot">依据服务器Excel数据</div>
     </div>
   </div>
 
@@ -341,21 +331,14 @@ function renderAll(data, isLive) {
   document.getElementById('balTopped').textContent = sym + topped.toFixed(2);
   document.getElementById('balCurrency').textContent = cur;
 
-  const todayStart = new Date(); todayStart.setHours(0,0,0,0);
-  const todaySamples = balanceHistory.filter(h => new Date(h.t).getTime() >= todayStart.getTime());
-  const todayCost = todaySamples.length >= 2 ? Math.max(0, todaySamples[0].b - bal) : 0;
-  const totalCost = balanceHistory.length >= 2 ? Math.max(0, balanceHistory[0].b - bal) : 0;
-
-  document.getElementById('todayCost').textContent = sym + todayCost.toFixed(2);
-  document.getElementById('todaySnapshot').textContent = todaySamples.length + ' 条';
-  document.getElementById('totalCost').textContent = sym + totalCost.toFixed(2);
-  document.getElementById('snapshotCount').textContent = balanceHistory.length;
-
-  if (balanceHistory.length >= 2) {
-    const first = new Date(balanceHistory[0].t);
-    const hours = Math.round((Date.now() - first.getTime()) / 3600000 * 10) / 10;
-    document.getElementById('trackDuration').textContent = hours + ' 小时';
-  }
+  // 累计消耗：从服务器数据（与Excel一致）算所有负变化的总和
+  const cumul = window._cumulativeCost !== undefined ? window._cumulativeCost : (() => {
+    let s = 0;
+    for (const h of serverHistory) { const d = h.d; if (typeof d === 'number' && d < 0) s += Math.abs(d); }
+    return s;
+  })();
+  document.getElementById('totalCost').textContent = sym + cumul.toFixed(2);
+  document.getElementById('totalSnapshot').textContent = serverHistory.length + ' 条记录 · 累计消耗 ¥' + cumul.toFixed(2);
 
   document.getElementById('balStatusInfo').textContent = avail ? '正常' : '已停用';
   document.getElementById('balStatusInfo').style.color = avail ? '#27ae60' : '#e74c3c';
