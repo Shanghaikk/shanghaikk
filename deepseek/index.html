@@ -109,6 +109,35 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
     </div>
   </div>
 
+  <!-- 今日余额汇总（按天重置） -->
+  <div class="balance-section" style="padding:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <div style="font-size:11px;color:#86868b;text-transform:uppercase;letter-spacing:1px;">📅 今日余额汇总</div>
+      <div id="dailyDateBadge" style="font-size:10px;padding:2px 8px;border-radius:10px;background:#f5f5f7;color:#86868b;border:1px solid #e5e5ea">—</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px">
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">起始余额</div>
+        <div style="font-size:18px;font-weight:700;color:#1d1d1f;margin-top:2px"><span id="dailyStartBal">—</span></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">当前余额</div>
+        <div style="font-size:18px;font-weight:700;color:#1d1d1f;margin-top:2px"><span id="dailyEndBal">—</span></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">今日消耗</div>
+        <div style="font-size:18px;font-weight:700;color:#e67e22;margin-top:2px"><span id="dailyUsage">—</span></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">充值金额</div>
+        <div style="font-size:18px;font-weight:700;color:#27ae60;margin-top:2px"><span id="dailyTopped">—</span></div>
+      </div>
+    </div>
+    <div style="margin-top:8px;font-size:9px;color:#aeaeb2;text-align:center;">
+      每日00:00自动重置 · 来自服务器快照数据
+    </div>
+  </div>
+
   <!-- 用量三板块（仿 DeepSeek 开放平台） -->
   <div class="section-title" style="margin-top:24px">🔋 今日用量</div>
   <div class="stat-grid" id="usageStats" style="grid-template-columns:repeat(3,1fr)">
@@ -341,8 +370,50 @@ function renderAll(data, isLive) {
   document.getElementById('balStatusInfo').textContent = avail ? '正常' : '已停用';
   document.getElementById('balStatusInfo').style.color = avail ? '#27ae60' : '#e74c3c';
 
+  renderDailySummary(serverHistory);
   renderChart(serverHistory);
   renderHistory(serverHistory);
+}
+
+// ====== 渲染每日余额汇总 ======
+function renderDailySummary(history) {
+  if (!history || history.length < 2) return;
+  
+  const today = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }).split(' ')[0].replace(/\//g, '-');
+  
+  // 获取今天的所有记录
+  const dayRecords = history.filter(h => h.t && h.t.startsWith(today) && typeof h.b === 'number');
+  
+  document.getElementById('dailyDateBadge').textContent = today;
+  
+  if (dayRecords.length < 1) {
+    // 没今天的记录，取最后一天
+    const lastDay = [...new Set(history.map(h => h.t ? h.t.slice(0,10) : '').filter(Boolean))].pop();
+    const lastDayRecords = history.filter(h => h.t && h.t.startsWith(lastDay) && typeof h.b === 'number');
+    if (lastDayRecords.length < 1) { return; }
+    
+    const first = lastDayRecords[0].b;
+    const last = lastDayRecords[lastDayRecords.length - 1].b;
+    const topped = lastDayRecords.filter(r => typeof r.d === 'number' && r.d > 0).reduce((s, r) => s + r.d, 0);
+    const usage = Math.max(0, parseFloat((first - last + topped).toFixed(2)));
+    
+    document.getElementById('dailyDateBadge').textContent = lastDay + '（最后记录）';
+    document.getElementById('dailyStartBal').textContent = '¥' + first.toFixed(2);
+    document.getElementById('dailyEndBal').textContent = '¥' + last.toFixed(2);
+    document.getElementById('dailyUsage').textContent = '¥' + usage.toFixed(2);
+    document.getElementById('dailyTopped').textContent = topped > 0 ? '¥' + topped.toFixed(2) : '—';
+    return;
+  }
+  
+  const first = dayRecords[0].b;
+  const last = dayRecords[dayRecords.length - 1].b;
+  const topped = dayRecords.filter(r => typeof r.d === 'number' && r.d > 0).reduce((s, r) => s + r.d, 0);
+  const usage = Math.max(0, parseFloat((first - last + topped).toFixed(2)));
+  
+  document.getElementById('dailyStartBal').textContent = '¥' + first.toFixed(2);
+  document.getElementById('dailyEndBal').textContent = '¥' + last.toFixed(2);
+  document.getElementById('dailyUsage').textContent = '¥' + usage.toFixed(2);
+  document.getElementById('dailyTopped').textContent = topped > 0 ? '¥' + topped.toFixed(2) : '—';
 }
 
 // ====== 主循环 ======
