@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦐 DeepSeek + 🚀 火星 用量看板</title>
+<title>🦐 DeepSeek + 🚀 火星 + 🏔️ 百炼 用量看板</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#f5f5f7;color:#1d1d1f;min-height:100vh;padding:24px}
@@ -116,6 +116,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
     </div>
   </div>
 
+  <!-- 🏔️ 百炼平台余额（NEW） -->
+  <div class="balance-section" style="border-color:#a8d8ea;background:linear-gradient(135deg,#e6f7ff,#ffffff)">
+    <div class="label">🏔️ 百炼平台 · 账户余额</div>
+    <div class="amount"><span class="cur">¥</span><span id="dsBalAmount">—</span></div>
+    <div class="meta">
+      <span>本月已用 <span class="val" id="dsMonthlyUsage">—</span></span>
+      <span>币种 CNY</span>
+    </div>
+    <div style="margin-top:12px;">
+      <div style="display:flex;justify-content:center;gap:20px;font-size:10px;color:#86868b;">
+        <span>最近记录 <span id="dsLastTime" style="font-weight:600;color:#0077b6">—</span></span>
+        <span>数据条数 <span id="dsCount" style="font-weight:600;color:#0077b6">—</span></span>
+      </div>
+    </div>
+  </div>
+
   <!-- DeepSeek 今日余额汇总 -->
   <div class="balance-section" style="padding:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
@@ -168,6 +184,32 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
     </div>
   </div>
 
+  <!-- 🏔️ 百炼平台今日汇总（NEW） -->
+  <div class="balance-section" style="padding:20px;margin-top:-12px;border-color:#a8d8ea;background:linear-gradient(135deg,#e6f7ff,#ffffff)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <div style="font-size:11px;color:#86868b;text-transform:uppercase;letter-spacing:1px;">🏔️ 百炼平台 · 今日汇总</div>
+      <div id="dsDailyDateBadge" style="font-size:10px;padding:2px 8px;border-radius:10px;background:#f5f5f7;color:#86868b;border:1px solid #e5e5ea">—</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px">
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">起始余额</div>
+        <div style="font-size:18px;font-weight:700;color:#1d1d1f;margin-top:2px"><span id="dsDailyStartBal">—</span></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">当前余额</div>
+        <div style="font-size:18px;font-weight:700;color:#1d1d1f;margin-top:2px"><span id="dsDailyEndBal">—</span></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">今日消耗</div>
+        <div style="font-size:18px;font-weight:700;color:#e67e22;margin-top:2px"><span id="dsDailyUsage">—</span></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">充值金额</div>
+        <div style="font-size:18px;font-weight:700;color:#27ae60;margin-top:2px"><span id="dsDailyTopped">—</span></div>
+      </div>
+    </div>
+  </div>
+
   <!-- 今日用量 -->
   <div class="section-title" style="margin-top:24px">🔋 今日用量 (DeepSeek)</div>
   <div class="stat-grid" id="usageStats" style="grid-template-columns:repeat(3,1fr)">
@@ -205,6 +247,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
     <div class="info-item"><div class="il">模型</div><div class="iv">deepseek-v4-flash</div></div>
     <div class="info-item"><div class="il">DeepSeek 状态</div><div class="iv" id="balStatusInfo">—</div></div>
     <div class="info-item"><div class="il">火星平台</div><div class="iv" id="hxStatusInfo">—</div></div>
+    <div class="info-item"><div class="il">百炼平台</div><div class="iv" id="dsStatusInfo">—</div></div>
     <div class="info-item"><div class="il">刷新间隔</div><div class="iv">30 秒</div></div>
   </div>
 
@@ -229,6 +272,7 @@ const DEEPSEEK_API_KEY = (function() {
 let balanceHistory = [];
 let serverHistory = [];
 let hxServerHistory = [];
+let dsServerHistory = [];
 const MAX_HISTORY = 50000;
 try {
   const saved = localStorage.getItem('ds_balance_history');
@@ -243,6 +287,7 @@ function saveHistory() {
 let serverError = null;
 const SERVER_DATA_URL = 'https://raw.githubusercontent.com/Shanghaikk/shanghaikk/main/deepseek/balance-data.json';
 const HX_DATA_URL = 'https://raw.githubusercontent.com/Shanghaikk/shanghaikk/main/deepseek/huoxing-balance-data.json';
+const DS_DATA_URL = 'https://raw.githubusercontent.com/Shanghaikk/shanghaikk/main/deepseek/dashscope-balance-data.json';
 const USAGE_DATA_URL = 'https://raw.githubusercontent.com/Shanghaikk/shanghaikk/main/deepseek/usage-data.json';
 
 async function loadServerHistory() {
@@ -272,6 +317,21 @@ async function loadHxServerHistory() {
     return data;
   } catch(e) {
     console.warn('[HX] server failed:', e.message);
+    return null;
+  }
+}
+
+async function loadDsServerHistory() {
+  try {
+    let res = await fetch('dashscope-balance-data.json?t=' + Date.now());
+    if (!res.ok) { res = await fetch(DS_DATA_URL + '?t=' + Date.now()); }
+    if (!res.ok) { throw new Error('HTTP ' + res.status); }
+    const data = await res.json();
+    if (!Array.isArray(data)) { throw new Error('not array'); }
+    console.log('[DSCOPE] server loaded', data.length, 'records');
+    return data;
+  } catch(e) {
+    console.warn('[DSCOPE] server failed:', e.message);
     return null;
   }
 }
@@ -351,7 +411,6 @@ function renderHxPlatform(history) {
   document.getElementById('hxStatusInfo').textContent = '✅ ' + history.length + ' 条记录';
   document.getElementById('hxStatusInfo').style.color = '#7b1fa2';
 
-  // 今日汇总
   const today = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }).split(' ')[0].replace(/\//g, '-');
   document.getElementById('hxDailyDateBadge').textContent = today;
   const dayRecords = history.filter(h => h.t && h.t.startsWith(today) && typeof h.b === 'number');
@@ -365,10 +424,42 @@ function renderHxPlatform(history) {
     document.getElementById('hxDailyUsage').textContent = '$' + usage.toFixed(2);
     document.getElementById('hxDailyTopped').textContent = topped > 0 ? '$' + topped.toFixed(2) : '—';
   } else {
-    // 没今天的记录取最后一条
     document.getElementById('hxDailyStartBal').textContent = '$' + bal.toFixed(2);
     document.getElementById('hxDailyEndBal').textContent = '$' + bal.toFixed(2);
     document.getElementById('hxDailyUsage').textContent = '$0.00';
+  }
+}
+
+// ====== 百炼平台渲染（NEW） ======
+function renderDsPlatform(history) {
+  if (!history || history.length === 0) { return; }
+  const latest = history[history.length - 1];
+  const bal = latest.b;
+  const monthly = latest.m || 0;
+
+  document.getElementById('dsBalAmount').textContent = bal.toFixed(2);
+  document.getElementById('dsMonthlyUsage').textContent = '¥' + monthly.toFixed(4);
+  document.getElementById('dsLastTime').textContent = latest.t.slice(5, 16);
+  document.getElementById('dsCount').textContent = history.length;
+  document.getElementById('dsStatusInfo').textContent = '✅ ' + history.length + ' 条记录';
+  document.getElementById('dsStatusInfo').style.color = '#0077b6';
+
+  const today = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }).split(' ')[0].replace(/\//g, '-');
+  document.getElementById('dsDailyDateBadge').textContent = today;
+  const dayRecords = history.filter(h => h.t && h.t.startsWith(today) && typeof h.b === 'number');
+  if (dayRecords.length >= 1) {
+    const first = dayRecords[0].b;
+    const last = dayRecords[dayRecords.length - 1].b;
+    const topped = dayRecords.filter(r => typeof r.d === 'number' && r.d > 0).reduce((s, r) => s + r.d, 0);
+    const usage = Math.max(0, parseFloat((first - last + topped).toFixed(2)));
+    document.getElementById('dsDailyStartBal').textContent = '¥' + first.toFixed(2);
+    document.getElementById('dsDailyEndBal').textContent = '¥' + last.toFixed(2);
+    document.getElementById('dsDailyUsage').textContent = '¥' + usage.toFixed(2);
+    document.getElementById('dsDailyTopped').textContent = topped > 0 ? '¥' + topped.toFixed(2) : '—';
+  } else {
+    document.getElementById('dsDailyStartBal').textContent = '¥' + bal.toFixed(2);
+    document.getElementById('dsDailyEndBal').textContent = '¥' + bal.toFixed(2);
+    document.getElementById('dsDailyUsage').textContent = '¥0.00';
   }
 }
 
@@ -416,6 +507,7 @@ function renderAll(data, isLive) {
   renderChart(serverHistory);
   renderHistory(serverHistory);
   renderHxPlatform(hxServerHistory);
+  renderDsPlatform(dsServerHistory);
 }
 
 // ====== DeepSeek 每日汇总 ======
@@ -503,6 +595,7 @@ async function loadUsageStats() {
   document.getElementById('headerSub').textContent = '⏳ 加载服务器历史...';
   const serverData = await loadServerHistory();
   const hxData = await loadHxServerHistory();
+  const dsData = await loadDsServerHistory();
   if (serverData && serverData.length > 0) {
     serverHistory = [...serverData];
     const localKeys = new Set(balanceHistory.map(h => h.t.slice(0, 16)));
@@ -521,9 +614,13 @@ async function loadUsageStats() {
   if (hxData && hxData.length > 0) {
     hxServerHistory = hxData;
   }
+  if (dsData && dsData.length > 0) {
+    dsServerHistory = dsData;
+  }
   const statusParts = [];
   if (serverData) statusParts.push('☁️ DS ' + serverData.length + ' 条');
   if (hxData) statusParts.push('🚀 HX ' + hxData.length + ' 条');
+  if (dsData) statusParts.push('🏔️ DSCOPE ' + dsData.length + ' 条');
   if (balanceHistory.length > serverData.length) statusParts.push('💻 ' + (balanceHistory.length - (serverData?.length || 0)) + ' 本地条');
   if (serverError) statusParts.push('⚠️ ' + serverError.slice(0, 30));
   document.getElementById('headerSub').textContent = statusParts.join(' · ') || '加载中...';
