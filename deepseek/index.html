@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦐 DeepSeek 用量看板</title>
+<title>🦐 DeepSeek + 🚀 火星 用量看板</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;background:#f5f5f7;color:#1d1d1f;min-height:100vh;padding:24px}
 .container{max-width:640px;margin:0 auto}
 
-/* Header */
 .header{text-align:center;margin-bottom:24px}
 .header h1{font-size:22px;font-weight:700;color:#1d1d1f}
 .header .sub{font-size:12px;color:#86868b;margin-top:4px}
@@ -17,7 +16,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .status.online{background:#e8f5e9;color:#2e7d32;border:1px solid #c8e6c9}
 .status.offline{background:#ffebee;color:#c62828;border:1px solid #ffcdd2}
 
-/* Balance Section */
 .balance-section{background:#ffffff;border:1px solid #e5e5ea;border-radius:16px;padding:24px;margin-bottom:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .balance-section .label{font-size:11px;color:#86868b;text-transform:uppercase;letter-spacing:1px}
 .balance-section .amount{font-size:44px;font-weight:700;color:#1d1d1f;margin:4px 0 2px;letter-spacing:-2px}
@@ -26,7 +24,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .balance-section .meta span{display:flex;align-items:center;gap:4px}
 .balance-section .meta .val{color:#1d1d1f;font-weight:500}
 
-/* Stat Grid */
 .stat-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:12px}
 .stat-card{background:#ffffff;border:1px solid #e5e5ea;border-radius:12px;padding:16px 12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .stat-card .l{font-size:10px;color:#86868b;text-transform:uppercase;letter-spacing:.5px}
@@ -36,7 +33,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .stat-card.c2 .v{color:#2980b9}
 .stat-card.c3 .v{color:#8e44ad}
 
-/* Chart Section */
 .section-title{font-size:13px;font-weight:600;color:#86868b;margin:16px 0 8px;display:flex;align-items:center;gap:6px}
 .chart-card{background:#ffffff;border:1px solid #e5e5ea;border-radius:12px;padding:16px;margin-bottom:12px;min-height:120px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .chart-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
@@ -44,7 +40,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .chart-header .tl .hl{color:#1d1d1f}
 .chart-header .badge{font-size:10px;padding:2px 8px;border-radius:10px;background:#f5f5f7;color:#86868b;border:1px solid #e5e5ea}
 
-/* Bar Chart */
 .bar-list{display:flex;flex-direction:column}
 .bar-row{display:flex;align-items:center;gap:6px;padding:4px 0;min-height:30px}
 .bar-row .b-bal{font-size:12px;font-weight:600;min-width:56px;text-align:right}
@@ -55,13 +50,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .bar-row.row-first .b-bal,.bar-row.row-first .b-time{color:#aeaeb2}
 .bar-row.row-first .b-drop{color:#c7c7cc}
 
-/* Info Grid */
 .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:12px}
 .info-item{background:#ffffff;border:1px solid #e5e5ea;border-radius:10px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .info-item .il{font-size:10px;color:#86868b;text-transform:uppercase;letter-spacing:.5px}
 .info-item .iv{font-size:14px;font-weight:600;margin-top:3px}
 
-/* History Table */
 .history-card{background:#ffffff;border:1px solid #e5e5ea;border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .history-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f2f2f7;font-size:12px}
 .history-row:last-child{border-bottom:none}
@@ -69,11 +62,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 .history-row .h-bal{font-weight:600;color:#1d1d1f}
 .history-row .h-drop{color:#e67e22}
 
-/* Footer */
 .footer{text-align:center;padding:12px 0;font-size:10px;color:#aeaeb2}
 .footer .dot{color:#34c759}
-
-/* Empty */
 .empty{text-align:center;padding:30px;color:#aeaeb2;font-size:13px}
 
 @media(max-width:480px){
@@ -88,14 +78,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
 <body>
 <div class="container">
   <div class="header">
-    <h1>🦐 DeepSeek 用量</h1>
+    <h1>🦐 AI 用量看板</h1>
     <div class="sub" id="headerSub">加载中...</div>
     <div class="status" id="statusBadge">● 连接中</div>
   </div>
 
-  <!-- 余额 + 累计消耗 -->
+  <!-- DeepSeek 余额 -->
   <div class="balance-section">
-    <div class="label">💰 账户余额</div>
+    <div class="label">🦐 DeepSeek · 账户余额</div>
     <div class="amount"><span class="cur">¥</span><span id="balAmount">0.00</span></div>
     <div class="meta">
       <span>赠送 <span class="val" id="balGranted">0.00</span></span>
@@ -109,10 +99,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
     </div>
   </div>
 
-  <!-- 今日余额汇总（按天重置） -->
+  <!-- 🚀 火星平台余额 -->
+  <div class="balance-section" style="border-color:#d5c4e0;background:linear-gradient(135deg,#f8f0ff,#ffffff)">
+    <div class="label">🚀 火星平台 · 账户余额</div>
+    <div class="amount"><span class="cur">$</span><span id="hxBalAmount">—</span></div>
+    <div class="meta">
+      <span>用户 <span class="val" id="hxUser">—</span></span>
+      <span>请求数 <span class="val" id="hxRequests">—</span></span>
+      <span>币种 USD</span>
+    </div>
+    <div style="margin-top:12px;">
+      <div style="display:flex;justify-content:center;gap:20px;font-size:10px;color:#86868b;">
+        <span>最近记录 <span id="hxLastTime" style="font-weight:600;color:#7b1fa2">—</span></span>
+        <span>数据条数 <span id="hxCount" style="font-weight:600;color:#7b1fa2">—</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DeepSeek 今日余额汇总 -->
   <div class="balance-section" style="padding:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-      <div style="font-size:11px;color:#86868b;text-transform:uppercase;letter-spacing:1px;">📅 今日余额汇总</div>
+      <div style="font-size:11px;color:#86868b;text-transform:uppercase;letter-spacing:1px;">🦐 DeepSeek · 今日汇总</div>
       <div id="dailyDateBadge" style="font-size:10px;padding:2px 8px;border-radius:10px;background:#f5f5f7;color:#86868b;border:1px solid #e5e5ea">—</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px">
@@ -133,13 +140,36 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
         <div style="font-size:18px;font-weight:700;color:#27ae60;margin-top:2px"><span id="dailyTopped">—</span></div>
       </div>
     </div>
-    <div style="margin-top:8px;font-size:9px;color:#aeaeb2;text-align:center;">
-      每日00:00自动重置 · 来自服务器快照数据
+  </div>
+
+  <!-- 🚀 火星平台今日汇总 -->
+  <div class="balance-section" style="padding:20px;margin-top:-12px;border-color:#d5c4e0;background:linear-gradient(135deg,#f8f0ff,#ffffff)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <div style="font-size:11px;color:#86868b;text-transform:uppercase;letter-spacing:1px;">🚀 火星平台 · 今日汇总</div>
+      <div id="hxDailyDateBadge" style="font-size:10px;padding:2px 8px;border-radius:10px;background:#f5f5f7;color:#86868b;border:1px solid #e5e5ea">—</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px">
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">起始余额</div>
+        <div style="font-size:18px;font-weight:700;color:#1d1d1f;margin-top:2px"><span id="hxDailyStartBal">—</span></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">当前余额</div>
+        <div style="font-size:18px;font-weight:700;color:#1d1d1f;margin-top:2px"><span id="hxDailyEndBal">—</span></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">今日消耗</div>
+        <div style="font-size:18px;font-weight:700;color:#e67e22;margin-top:2px"><span id="hxDailyUsage">—</span></div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:9px;color:#86868b">充值金额</div>
+        <div style="font-size:18px;font-weight:700;color:#27ae60;margin-top:2px"><span id="hxDailyTopped">—</span></div>
+      </div>
     </div>
   </div>
 
-  <!-- 用量三板块（仿 DeepSeek 开放平台） -->
-  <div class="section-title" style="margin-top:24px">🔋 今日用量</div>
+  <!-- 今日用量 -->
+  <div class="section-title" style="margin-top:24px">🔋 今日用量 (DeepSeek)</div>
   <div class="stat-grid" id="usageStats" style="grid-template-columns:repeat(3,1fr)">
     <div class="stat-card c1">
       <div class="l">💰 消费金额</div>
@@ -164,7 +194,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
   </div>
 
   <!-- 余额变化趋势 -->
-  <div class="section-title">📊 余额变化 · 每10分钟</div>
+  <div class="section-title">📊 DeepSeek 余额变化 · 每10分钟</div>
   <div class="chart-card" id="chartArea">
     <div class="empty">采集数据中...</div>
   </div>
@@ -173,8 +203,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
   <div class="section-title">📋 账户信息</div>
   <div class="info-grid" id="infoGrid">
     <div class="info-item"><div class="il">模型</div><div class="iv">deepseek-v4-flash</div></div>
-    <div class="info-item"><div class="il">余额状态</div><div class="iv" id="balStatusInfo">—</div></div>
-    <div class="info-item"><div class="il">数据源</div><div class="iv">API 实时</div></div>
+    <div class="info-item"><div class="il">DeepSeek 状态</div><div class="iv" id="balStatusInfo">—</div></div>
+    <div class="info-item"><div class="il">火星平台</div><div class="iv" id="hxStatusInfo">—</div></div>
     <div class="info-item"><div class="il">刷新间隔</div><div class="iv">30 秒</div></div>
   </div>
 
@@ -197,8 +227,9 @@ const DEEPSEEK_API_KEY = (function() {
 
 // ====== 数据存储 ======
 let balanceHistory = [];
-let serverHistory = []; // 纯服务器数据（与 Excel 一致）
-const MAX_HISTORY = 50000; // 约 347 天 × 144 条/天
+let serverHistory = [];
+let hxServerHistory = [];
+const MAX_HISTORY = 50000;
 try {
   const saved = localStorage.getItem('ds_balance_history');
   if (saved) balanceHistory = JSON.parse(saved);
@@ -209,24 +240,19 @@ function saveHistory() {
 }
 
 // ====== 加载服务器端全量历史 ======
-let serverLoaded = 0;
 let serverError = null;
 const SERVER_DATA_URL = 'https://raw.githubusercontent.com/Shanghaikk/shanghaikk/main/deepseek/balance-data.json';
+const HX_DATA_URL = 'https://raw.githubusercontent.com/Shanghaikk/shanghaikk/main/deepseek/huoxing-balance-data.json';
 const USAGE_DATA_URL = 'https://raw.githubusercontent.com/Shanghaikk/shanghaikk/main/deepseek/usage-data.json';
 
 async function loadServerHistory() {
   try {
-    // 尝试从 GitHub Pages 加载（同域）
     let res = await fetch('balance-data.json?t=' + Date.now());
-    if (!res.ok) {
-      // 降级到 raw 地址
-      res = await fetch(SERVER_DATA_URL + '?t=' + Date.now());
-    }
+    if (!res.ok) { res = await fetch(SERVER_DATA_URL + '?t=' + Date.now()); }
     if (!res.ok) { throw new Error('HTTP ' + res.status); }
     const data = await res.json();
     if (!Array.isArray(data)) { throw new Error('not array'); }
-    serverLoaded = data.length;
-    console.log('[DS] server loaded', serverLoaded, 'records');
+    console.log('[DS] server loaded', data.length, 'records');
     return data;
   } catch(e) {
     serverError = e.message;
@@ -235,7 +261,22 @@ async function loadServerHistory() {
   }
 }
 
-// ====== API ======
+async function loadHxServerHistory() {
+  try {
+    let res = await fetch('huoxing-balance-data.json?t=' + Date.now());
+    if (!res.ok) { res = await fetch(HX_DATA_URL + '?t=' + Date.now()); }
+    if (!res.ok) { throw new Error('HTTP ' + res.status); }
+    const data = await res.json();
+    if (!Array.isArray(data)) { throw new Error('not array'); }
+    console.log('[HX] server loaded', data.length, 'records');
+    return data;
+  } catch(e) {
+    console.warn('[HX] server failed:', e.message);
+    return null;
+  }
+}
+
+// ====== DeepSeek API ======
 async function fetchBalance() {
   const res = await fetch('https://api.deepseek.com/user/balance', {
     headers: { 'Authorization': 'Bearer ' + DEEPSEEK_API_KEY, 'Accept': 'application/json' }
@@ -244,69 +285,44 @@ async function fetchBalance() {
   return await res.json();
 }
 
-// ====== 更新时间 ======
 function updateFooter() {
   document.getElementById('footerTime').textContent =
     new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
 }
 
-// ====== 对齐到整10分钟 ======
-function alignSlot(ts) {
-  return Math.floor(ts / 600000) * 600000;
-}
-
-// ====== 渲染余额变化（完全照搬 Excel 数据，不重新计算） ======
+// ====== 渲染 ======
 function renderChart(history) {
   const el = document.getElementById('chartArea');
-  // 过滤掉变化为0的记录（但保留第一条起始记录）
   const firstT = history.length > 0 ? history[0].t : null;
   const filtered = history.filter(h => h.t === firstT || (typeof h.d === 'number' ? h.d : null) !== 0);
   const show = filtered.length >= 2 ? filtered : history;
-
-  if (show.length < 2) {
-    el.innerHTML = '<div class="empty">暂无数据</div>';
-    return;
-  }
-
-  // 倒序展示（最新在上）
+  if (show.length < 2) { el.innerHTML = '<div class="empty">暂无数据</div>'; return; }
   const reversed = [...show].reverse();
-
   let html = '<div class="chart-header"><div class="tl">时间</div><div class="tl" style="text-align:center">余额</div><div class="tl" style="text-align:right">变化</div></div>';
-
   let maxDrop = 0.01;
-  for (const h of reversed) {
-    const d = typeof h.d === 'number' ? h.d : 0;
-    if (d < 0 && Math.abs(d) > maxDrop) maxDrop = Math.abs(d);
-  }
-
+  for (const h of reversed) { const d = typeof h.d === 'number' ? h.d : 0; if (d < 0 && Math.abs(d) > maxDrop) maxDrop = Math.abs(d); }
   for (let i = 0; i < reversed.length; i++) {
     const h = reversed[i];
     const d = typeof h.d === 'number' ? h.d : 0;
     const time = h.t.slice(11, 16);
-    const isLatest = i === 0; // 最新一条
+    const isLatest = i === 0;
     const color = d < 0 ? (Math.abs(d) > 0.15 ? '#e67e22' : Math.abs(d) > 0.05 ? '#f1c40f' : '#27ae60') : '#27ae60';
     const barPct = d < 0 ? Math.max(3, (Math.abs(d) / maxDrop) * 100) : 0;
-
     html += '<div class="bar-row">' +
       '<div class="b-time" style="min-width:48px">' + time + '</div>' +
       '<div class="b-bal" style="color:' + (isLatest ? '#1d1d1f' : (d < 0 ? color : '#1d1d1f')) + ';min-width:60px;text-align:center">¥' + h.b.toFixed(2) + '</div>' +
       '<div class="b-track">' + (barPct > 0 ? '<div class="b-fill" style="width:' + barPct + '%;background:' + color + '"></div>' : '') + '</div>' +
       '<div class="b-drop" style="color:' + color + ';min-width:60px;text-align:right">' + (isLatest ? '—' : (d >= 0 ? '+0.00' : d.toFixed(2))) + '</div></div>';
   }
-
   el.innerHTML = html;
 }
 
-// ====== 渲染历史记录表（照搬 Excel 数据） ======
 function renderHistory(history) {
   const el = document.getElementById('historyArea');
-  // 过滤掉变化为0的记录（但保留第一条起始记录）
   const firstT = history.length > 0 ? history[0].t : null;
   const filtered = history.filter(h => h.t === firstT || (typeof h.d === 'number' ? h.d : null) !== 0);
   const show = filtered.length >= 2 ? filtered : history;
-
   if (show.length < 2) { el.innerHTML = '<div class="empty">暂无记录</div>'; return; }
-
   const reversed = [...show].reverse().slice(0, 30);
   let html = '';
   for (const h of reversed) {
@@ -319,21 +335,55 @@ function renderHistory(history) {
   el.innerHTML = html;
 }
 
+// ====== 火星平台渲染 ======
+function renderHxPlatform(history) {
+  if (!history || history.length === 0) { return; }
+  const latest = history[history.length - 1];
+  const bal = latest.b;
+  const user = latest.u || 'Kevin';
+  const reqs = latest.r || 0;
+
+  document.getElementById('hxBalAmount').textContent = bal.toFixed(2);
+  document.getElementById('hxUser').textContent = user;
+  document.getElementById('hxRequests').textContent = reqs;
+  document.getElementById('hxLastTime').textContent = latest.t.slice(5, 16);
+  document.getElementById('hxCount').textContent = history.length;
+  document.getElementById('hxStatusInfo').textContent = '✅ ' + history.length + ' 条记录';
+  document.getElementById('hxStatusInfo').style.color = '#7b1fa2';
+
+  // 今日汇总
+  const today = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }).split(' ')[0].replace(/\//g, '-');
+  document.getElementById('hxDailyDateBadge').textContent = today;
+  const dayRecords = history.filter(h => h.t && h.t.startsWith(today) && typeof h.b === 'number');
+  if (dayRecords.length >= 1) {
+    const first = dayRecords[0].b;
+    const last = dayRecords[dayRecords.length - 1].b;
+    const topped = dayRecords.filter(r => typeof r.d === 'number' && r.d > 0).reduce((s, r) => s + r.d, 0);
+    const usage = Math.max(0, parseFloat((first - last + topped).toFixed(2)));
+    document.getElementById('hxDailyStartBal').textContent = '$' + first.toFixed(2);
+    document.getElementById('hxDailyEndBal').textContent = '$' + last.toFixed(2);
+    document.getElementById('hxDailyUsage').textContent = '$' + usage.toFixed(2);
+    document.getElementById('hxDailyTopped').textContent = topped > 0 ? '$' + topped.toFixed(2) : '—';
+  } else {
+    // 没今天的记录取最后一条
+    document.getElementById('hxDailyStartBal').textContent = '$' + bal.toFixed(2);
+    document.getElementById('hxDailyEndBal').textContent = '$' + bal.toFixed(2);
+    document.getElementById('hxDailyUsage').textContent = '$0.00';
+  }
+}
+
 // ====== 主渲染 ======
 function renderAll(data, isLive) {
   const info = data.balance_infos?.[0];
   if (!info) return;
-
   const bal = parseFloat(info.total_balance || '0');
   const granted = parseFloat(info.granted_balance || '0');
   const topped = parseFloat(info.topped_up_balance || '0');
   const avail = data.is_available;
   const cur = info.currency || 'CNY';
   const sym = cur === 'USD' ? '$' : '¥';
-
   const last = balanceHistory[balanceHistory.length - 1];
   if (!last || Math.abs(last.b - bal) > 0.001 || Date.now() - new Date(last.t).getTime() > 120000) {
-    // 格式化为 Beijing 10分钟时间，与服务器数据一致
     const now = new Date();
     const bjTime = now.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', hour12: false });
     const bjDate = bjTime.split(' ')[0].replace(/\//g, '-');
@@ -346,57 +396,42 @@ function renderAll(data, isLive) {
     if (balanceHistory.length > MAX_HISTORY) balanceHistory = balanceHistory.slice(-MAX_HISTORY);
     saveHistory();
   }
-
   document.getElementById('headerSub').textContent =
-    (isLive ? '🔴 实时' : '⚫ 缓存') + ' · ' + balanceHistory.length + ' 条快照';
+    (isLive ? '🔴 实时' : '⚫ 缓存') + ' · DeepSeek ' + balanceHistory.length + ' 条';
   const badge = document.getElementById('statusBadge');
   badge.textContent = avail ? (isLive ? '● 在线' : '● 缓存') : '✕ 已停用';
   badge.className = 'status ' + (avail ? 'online' : 'offline');
-
   document.getElementById('balAmount').textContent = bal.toFixed(2);
   document.getElementById('balGranted').textContent = sym + granted.toFixed(2);
   document.getElementById('balTopped').textContent = sym + topped.toFixed(2);
   document.getElementById('balCurrency').textContent = cur;
-
-  // 累计消耗：从服务器数据（与Excel一致）算所有负变化的总和
   const cumul = window._cumulativeCost !== undefined ? window._cumulativeCost : (() => {
-    let s = 0;
-    for (const h of serverHistory) { const d = h.d; if (typeof d === 'number' && d < 0) s += Math.abs(d); }
-    return s;
+    let s = 0; for (const h of serverHistory) { const d = h.d; if (typeof d === 'number' && d < 0) s += Math.abs(d); } return s;
   })();
   document.getElementById('totalCost').textContent = sym + cumul.toFixed(2);
   document.getElementById('totalSnapshot').textContent = serverHistory.length + ' 条记录 · 累计消耗 ¥' + cumul.toFixed(2);
-
   document.getElementById('balStatusInfo').textContent = avail ? '正常' : '已停用';
   document.getElementById('balStatusInfo').style.color = avail ? '#27ae60' : '#e74c3c';
-
   renderDailySummary(serverHistory);
   renderChart(serverHistory);
   renderHistory(serverHistory);
+  renderHxPlatform(hxServerHistory);
 }
 
-// ====== 渲染每日余额汇总 ======
+// ====== DeepSeek 每日汇总 ======
 function renderDailySummary(history) {
   if (!history || history.length < 2) return;
-  
   const today = new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }).split(' ')[0].replace(/\//g, '-');
-  
-  // 获取今天的所有记录
   const dayRecords = history.filter(h => h.t && h.t.startsWith(today) && typeof h.b === 'number');
-  
   document.getElementById('dailyDateBadge').textContent = today;
-  
   if (dayRecords.length < 1) {
-    // 没今天的记录，取最后一天
     const lastDay = [...new Set(history.map(h => h.t ? h.t.slice(0,10) : '').filter(Boolean))].pop();
     const lastDayRecords = history.filter(h => h.t && h.t.startsWith(lastDay) && typeof h.b === 'number');
     if (lastDayRecords.length < 1) { return; }
-    
     const first = lastDayRecords[0].b;
     const last = lastDayRecords[lastDayRecords.length - 1].b;
     const topped = lastDayRecords.filter(r => typeof r.d === 'number' && r.d > 0).reduce((s, r) => s + r.d, 0);
     const usage = Math.max(0, parseFloat((first - last + topped).toFixed(2)));
-    
     document.getElementById('dailyDateBadge').textContent = lastDay + '（最后记录）';
     document.getElementById('dailyStartBal').textContent = '¥' + first.toFixed(2);
     document.getElementById('dailyEndBal').textContent = '¥' + last.toFixed(2);
@@ -404,12 +439,10 @@ function renderDailySummary(history) {
     document.getElementById('dailyTopped').textContent = topped > 0 ? '¥' + topped.toFixed(2) : '—';
     return;
   }
-  
   const first = dayRecords[0].b;
   const last = dayRecords[dayRecords.length - 1].b;
   const topped = dayRecords.filter(r => typeof r.d === 'number' && r.d > 0).reduce((s, r) => s + r.d, 0);
   const usage = Math.max(0, parseFloat((first - last + topped).toFixed(2)));
-  
   document.getElementById('dailyStartBal').textContent = '¥' + first.toFixed(2);
   document.getElementById('dailyEndBal').textContent = '¥' + last.toFixed(2);
   document.getElementById('dailyUsage').textContent = '¥' + usage.toFixed(2);
@@ -434,7 +467,6 @@ async function tick() {
   }
 }
 
-// ====== 加载用量数据 ======
 function formatNum(n) {
   if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
   if (n >= 1000) return (n/1000).toFixed(1) + 'k';
@@ -457,7 +489,6 @@ async function loadUsageStats() {
     document.getElementById('usageCost').textContent = '¥' + todayData.cost_cny.toFixed(2);
     document.getElementById('usageCalls').textContent = formatNum(todayData.calls);
     document.getElementById('usageCallsLabel').textContent = todayData.calls + ' 次请求';
-    const tf = formatNum(todayData.input + todayData.output);
     const totalTok = (todayData.input_cache_hit || 0) + (todayData.input_cache_miss || 0) + (todayData.output || 0);
     document.getElementById('usageTokens').textContent = formatNum(totalTok);
     document.getElementById('usageTokensLabel').textContent = formatNum(totalTok) + ' 总tokens';
@@ -467,22 +498,18 @@ async function loadUsageStats() {
   } catch(e) { console.warn('[USAGE]', e.message); }
 }
 
-// ====== 启动：加载服务器历史 + 实时更新 ======
+// ====== 启动 ======
 (async function init() {
-  // 1. 显示加载状态
   document.getElementById('headerSub').textContent = '⏳ 加载服务器历史...';
-
-  // 2. 先保留纯服务器数据（与 Excel 一致）
   const serverData = await loadServerHistory();
+  const hxData = await loadHxServerHistory();
   if (serverData && serverData.length > 0) {
     serverHistory = [...serverData];
-    // 3. 合并去重：补充本地没有的记录
     const localKeys = new Set(balanceHistory.map(h => h.t.slice(0, 16)));
     let added = 0;
     for (const h of serverData) {
       if (typeof h.b === 'number' && !localKeys.has(h.t.slice(0, 16))) {
-        balanceHistory.push(h);
-        added++;
+        balanceHistory.push(h); added++;
       }
     }
     if (added > 0) {
@@ -491,18 +518,16 @@ async function loadUsageStats() {
       saveHistory();
     }
   }
-
-  // 4. 更新状态显示
+  if (hxData && hxData.length > 0) {
+    hxServerHistory = hxData;
+  }
   const statusParts = [];
-  if (serverData) statusParts.push('☁️ ' + serverData.length + ' 服务器条');
-  if (balanceHistory.length > serverData.length) statusParts.push('💻 ' + (balanceHistory.length - serverData.length) + ' 本地条');
+  if (serverData) statusParts.push('☁️ DS ' + serverData.length + ' 条');
+  if (hxData) statusParts.push('🚀 HX ' + hxData.length + ' 条');
+  if (balanceHistory.length > serverData.length) statusParts.push('💻 ' + (balanceHistory.length - (serverData?.length || 0)) + ' 本地条');
   if (serverError) statusParts.push('⚠️ ' + serverError.slice(0, 30));
   document.getElementById('headerSub').textContent = statusParts.join(' · ') || '加载中...';
-
-  // 5. 加载今日用量（消费/请求/tokens）
   loadUsageStats();
-
-  // 6. 开始实时更新
   tick();
   setInterval(tick, 30000);
 })();
