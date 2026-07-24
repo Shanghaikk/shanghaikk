@@ -102,11 +102,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue"
   <!-- 🚀 火星平台余额 -->
   <div class="balance-section" style="border-color:#d5c4e0;background:linear-gradient(135deg,#f8f0ff,#ffffff)">
     <div class="label">🚀 火星平台 · 账户余额</div>
-    <div class="amount"><span class="cur">$</span><span id="hxBalAmount">—</span></div>
+    <div class="amount"><span class="cur">¥</span><span id="hxBalAmount">—</span></div>
     <div class="meta">
       <span>用户 <span class="val" id="hxUser">—</span></span>
       <span>请求数 <span class="val" id="hxRequests">—</span></span>
-      <span>币种 USD</span>
+      <span>币种 CNY</span>
     </div>
     <div style="margin-top:12px;">
       <div style="display:flex;justify-content:center;gap:20px;font-size:10px;color:#86868b;">
@@ -419,14 +419,14 @@ function renderHxPlatform(history) {
     const last = dayRecords[dayRecords.length - 1].b;
     const topped = dayRecords.filter(r => typeof r.d === 'number' && r.d > 0).reduce((s, r) => s + r.d, 0);
     const usage = Math.max(0, parseFloat((first - last + topped).toFixed(2)));
-    document.getElementById('hxDailyStartBal').textContent = '$' + first.toFixed(2);
-    document.getElementById('hxDailyEndBal').textContent = '$' + last.toFixed(2);
-    document.getElementById('hxDailyUsage').textContent = '$' + usage.toFixed(2);
-    document.getElementById('hxDailyTopped').textContent = topped > 0 ? '$' + topped.toFixed(2) : '—';
+    document.getElementById('hxDailyStartBal').textContent = '¥' + first.toFixed(2);
+    document.getElementById('hxDailyEndBal').textContent = '¥' + last.toFixed(2);
+    document.getElementById('hxDailyUsage').textContent = '¥' + usage.toFixed(2);
+    document.getElementById('hxDailyTopped').textContent = topped > 0 ? '¥' + topped.toFixed(2) : '—';
   } else {
-    document.getElementById('hxDailyStartBal').textContent = '$' + bal.toFixed(2);
-    document.getElementById('hxDailyEndBal').textContent = '$' + bal.toFixed(2);
-    document.getElementById('hxDailyUsage').textContent = '$0.00';
+    document.getElementById('hxDailyStartBal').textContent = '¥' + bal.toFixed(2);
+    document.getElementById('hxDailyEndBal').textContent = '¥' + bal.toFixed(2);
+    document.getElementById('hxDailyUsage').textContent = '¥0.00';
   }
 }
 
